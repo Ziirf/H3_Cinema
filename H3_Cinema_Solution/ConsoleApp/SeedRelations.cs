@@ -20,6 +20,7 @@ namespace ConsoleApp
             //_context.AddRange(GenerateTheater());
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
+            _context.AddRange(AddSeatsToTheater());
             PopulateCustomerPostcode();
             _context.SaveChanges();
         }
@@ -76,6 +77,31 @@ namespace ConsoleApp
             {
                 customer.Postcode = postcodes.OrderBy(x => rnd.Next()).FirstOrDefault();
             }
+        }
+
+        private  List<Seat> GenerateSeats(List<SeatLocation> seatLocationListList, int rows, int seats)
+        {
+
+            var result = seatLocationListList.Where(x => x.Seat <= seats && x.Row <= rows).ToList();
+
+            return result.Select(sl => new Seat() { SeatLocation = sl }).ToList();
+        }
+
+        private  List<Theater> AddSeatsToTheater()
+        {
+
+            
+
+            var theaterList = _context.Theaters.ToList();
+            var seatlocationlist = _context.SeatLocations.ToList();
+
+            _context.Theaters.Find(theaterList[0].Id).Seats = GenerateSeats(seatlocationlist, 15, 20);
+            _context.Theaters.Find(theaterList[1].Id).Seats = GenerateSeats(seatlocationlist, 10, 20);
+            _context.Theaters.Find(theaterList[2].Id).Seats = GenerateSeats(seatlocationlist, 10, 10);
+            _context.Theaters.Find(theaterList[3].Id).Seats = GenerateSeats(seatlocationlist, 5, 10);
+
+
+            return theaterList;
         }
 
         //private List<Theater> GenerateTheater()
