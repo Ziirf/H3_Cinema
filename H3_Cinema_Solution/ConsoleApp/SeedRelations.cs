@@ -17,18 +17,19 @@ namespace ConsoleApp
 
         public void PopulateDatabaseRelation()
         {
-            _context.AddRange(GenerateTheater());
+            //_context.AddRange(GenerateTheater());
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
+            PopulateCustomerPostcode();
             _context.SaveChanges();
         }
 
         private List<MovieGenre> PopulateMovieGenre()
         {
             Random rnd = new Random();
-            var movieGenres = _context.MovieGenres.ToList();
-            var movies = _context.Movies.ToList();
-            var genres = _context.Genres.ToList();
+            List<MovieGenre> movieGenres = _context.MovieGenres.ToList();
+            List<Movie> movies = _context.Movies.ToList();
+            List<Genre> genres = _context.Genres.ToList();
 
             foreach (var movie in movies)
             {
@@ -45,10 +46,10 @@ namespace ConsoleApp
         private List<MovieCrew> PopulateMovieCrew()
         {
             Random rnd = new Random();
-            var movieCrews = _context.MovieCrew.ToList();
-            var movies = _context.Movies.ToList();
-            var crew = _context.Crews.ToList();
-            var roles = _context.Roles.ToList();
+            List<MovieCrew> movieCrews = _context.MovieCrew.ToList();
+            List<Movie> movies = _context.Movies.ToList();
+            List<Crew> crew = _context.Crews.ToList();
+            List<Role> roles = _context.Roles.ToList();
 
             foreach (var movie in movies)
             {
@@ -65,26 +66,38 @@ namespace ConsoleApp
             return movieCrews;
         }
 
-        private List<Seat> GenerateSeats(List<SeatLocation> seatLocations, int rows, int seats)
+        private void PopulateCustomerPostcode()
         {
-            var result = seatLocations.Where(x => x.Seat <= seats && x.Row <= rows).ToList();
+            List<Customer> customers = _context.Customers.ToList();
+            List<Postcode> postcodes = _context.Postcodes.ToList();
+            var rnd = new Random();
 
-            return result.Select(sl => new Seat() { SeatLocation = sl }).ToList();
-        }
-
-        private List<Theater> GenerateTheater()
-        {
-            List<SeatLocation> seatLocationList = _context.SeatLocations.ToList();
-
-            var list = new List<Theater>
+            foreach (var customer in customers)
             {
-                new Theater() { TheaterName = "MovieZilla", Seats = GenerateSeats(seatLocationList, 15, 20) },
-                new Theater() { TheaterName = "Wax on, wax off", Seats = GenerateSeats(seatLocationList, 10, 20) },
-                new Theater() { TheaterName = "Yippee ki-yay", Seats = GenerateSeats(seatLocationList, 10, 10) },
-                new Theater() { TheaterName = "To infinity and beyond!", Seats = GenerateSeats(seatLocationList, 5, 10) }
-            };
-
-            return list;
+                customer.Postcode = postcodes.OrderBy(x => rnd.Next()).FirstOrDefault();
+            }
         }
+
+        //private List<Theater> GenerateTheater()
+        //{
+        //    List<SeatLocation> seatLocationList = _context.SeatLocations.ToList();
+
+        //    var theaters = new List<Theater>
+        //    {
+        //        new Theater() { TheaterName = "MovieZilla", Seats = GenerateSeats(seatLocationList, 15, 20) },
+        //        new Theater() { TheaterName = "Wax on, wax off", Seats = GenerateSeats(seatLocationList, 10, 20) },
+        //        new Theater() { TheaterName = "Yippee ki-yay", Seats = GenerateSeats(seatLocationList, 10, 10) },
+        //        new Theater() { TheaterName = "To infinity and beyond!", Seats = GenerateSeats(seatLocationList, 5, 10) }
+        //    };
+
+        //    return theaters;
+        //}
+
+        //private List<Seat> GenerateSeats(List<SeatLocation> seatLocations, int rows, int seats)
+        //{
+        //    var result = seatLocations.Where(x => x.Seat <= seats && x.Row <= rows).ToList();
+
+        //    return result.Select(sl => new Seat() { SeatLocation = sl }).ToList();
+        //}
     }
 }

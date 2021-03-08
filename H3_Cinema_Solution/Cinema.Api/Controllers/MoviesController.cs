@@ -1,4 +1,5 @@
-﻿using Cinema.Data;
+﻿using System;
+using Cinema.Data;
 using Cinema.Domain.Converters;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Cinema.Api.Controllers
 {
@@ -26,12 +28,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies()
         {
             // Gets the movies out of the database and puts it into a list.
-            var movies = await _context.Movies
-                .Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Role)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Crew)
-                .Include(x => x.AgeRating)?
-                .ToListAsync();
+            var movies = await GetMoviesContext().ToListAsync();
 
             // Converts the movies into MovieDTO objects and returns them in a list.
             var converter = new MovieConverter();
@@ -39,16 +36,24 @@ namespace Cinema.Api.Controllers
             return movies.Select(movie => converter.Convert(movie)).ToList();
         }
 
+        [HttpGet("Random")]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRandom()
+        {
+            // Gets the movies out of the database and puts it into a list.
+            var movies = await GetMoviesContext().ToListAsync();
+
+            // Picks out 10 random movies and converts them into MovieDTO objects and returns them in a list.
+            var converter = new MovieConverter();
+            var random = new Random();
+            return movies.OrderBy(x => random.Next()).Take(10).Select(movie => converter.Convert(movie)).ToList();
+        }
+
         // GET: api/Movies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDTO>> GetMovie(int id)
         {
             // Gets the first movie with the Id into a single.
-            var movie = await _context.Movies
-                .Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Role)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Crew)
-                .Include(x => x.AgeRating)?.FirstOrDefaultAsync(x => x.Id == id);
+            var movie = await GetMoviesContext().FirstOrDefaultAsync(x => x.Id == id);
 
             if (movie == null)
             {
@@ -71,11 +76,7 @@ namespace Cinema.Api.Controllers
             }
 
             // Gets the first movie with the Id into a single.
-            var movie = await _context.Movies
-                .Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Role)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Crew)
-                .Include(x => x.AgeRating)?.FirstOrDefaultAsync(x => x.Id == id);
+            var movie = await GetMoviesContext().FirstOrDefaultAsync(x => x.Id == id);
 
             // Removes the many to many relations.
             _context.RemoveRange(movie.MovieCrews.ToList());
@@ -114,32 +115,7 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             // Get back the movie including its relation to return the movieDTO object.
-            movie = await _context.Movies
-                .Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Role)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Crew)
-                .Include(x => x.AgeRating)?.FirstOrDefaultAsync(x => x.Id == movie.Id);
-            //movieDTO = converter.Convert(movie);
-
-            //var crew = _context.MovieCrew.Include(x => x.Crew);
-
-            //movieDTO.Directors = crew
-            //    .Where(x => x.MovieId == movie.Id && x.RoleId == 1)
-            //    .Select(x => x.Crew).ToList();
-
-            //movieDTO.ScreenWriters = crew
-            //    .Where(x => x.MovieId == movie.Id && x.RoleId == 2)
-            //    .Select(x => x.Crew).ToList();
-
-            //movieDTO.ScriptWriters = crew
-            //    .Where(x => x.MovieId == movie.Id && x.RoleId == 3)
-            //    .Select(x => x.Crew).ToList();
-
-            //movieDTO.Actors = crew
-            //    .Where(x => x.MovieId == movie.Id && x.RoleId == 4)
-            //    .Select(x => x.Crew).ToList();
-
-            //movieDTO.Id = movie.Id;
+            movie = await GetMoviesContext().FirstOrDefaultAsync(x => x.Id == movie.Id);
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDTO);
         }
@@ -175,6 +151,15 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private IIncludableQueryable<Movie, Crew> GetMoviesContext()
+        {
+            return _context.Movies
+                .Include(x => x.AgeRating)?
+                .Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
+                .Include(x => x.MovieCrews).ThenInclude(x => x.Role)
+                .Include(x => x.MovieCrews).ThenInclude(x => x.Crew);
         }
 
         private bool MovieExists(int id)

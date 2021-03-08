@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace ConsoleApp
 {
@@ -24,6 +25,17 @@ namespace ConsoleApp
             // Populate the database
             new SeedData(_context).PopulateDatabase();
             new SeedRelations(_context).PopulateDatabaseRelation();
+        }
+
+
+        // Used temperarily to get seed data into json files
+        private static bool ConvertToJsonFile<T>(List<T> list, string fileName)
+        {
+            var json = JsonConvert.SerializeObject(list.ToArray());
+
+            File.WriteAllText($"data/{ fileName }.json", json);
+
+            return true;
         }
     }
 }

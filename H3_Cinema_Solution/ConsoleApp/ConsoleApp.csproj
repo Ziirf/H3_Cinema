@@ -6,6 +6,48 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="data\AgeRatings.json" />
+    <None Remove="data\Crew.json" />
+    <None Remove="data\Customers.json" />
+    <None Remove="data\Genres.json" />
+    <None Remove="data\Movies.json" />
+    <None Remove="data\Postcodes.json" />
+    <None Remove="data\Roles.json" />
+    <None Remove="data\SeatLocation.json" />
+    <None Remove="data\Theaters.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="data\AgeRatings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Crew.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Customers.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Genres.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Movies.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Postcodes.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Roles.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\SeatLocation.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\Theaters.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Cinema.Data\Cinema.Data.csproj" />
     <ProjectReference Include="..\Cinema.Domain\Cinema.Domain.csproj" />
   </ItemGroup>

@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{8A53616F-7C9D-46FC-8441-7740F9873E8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{8A53616F-7C9D-46FC-8441-7740F9873E8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.Domain", "Cinema.Domain\Cinema.Domain.csproj", "{F0EDCAFA-92B3-453A-929C-1392635152AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.Domain", "Cinema.Domain\Cinema.Domain.csproj", "{F0EDCAFA-92B3-453A-929C-1392635152AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.Data", "Cinema.Data\Cinema.Data.csproj", "{7C8701B1-F01A-4B28-B23D-61F1D8215A7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.Data", "Cinema.Data\Cinema.Data.csproj", "{7C8701B1-F01A-4B28-B23D-61F1D8215A7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.Api", "Cinema.Api\Cinema.Api.csproj", "{0DEA96EC-E287-40AB-BC61-2B31DE5F3054}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cinema.Api", "Cinema.Api\Cinema.Api.csproj", "{0DEA96EC-E287-40AB-BC61-2B31DE5F3054}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cinema.Testing", "Cinema.Testing\Cinema.Testing.csproj", "{88F5887A-87B4-43EF-8E19-142C16862912}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0DEA96EC-E287-40AB-BC61-2B31DE5F3054}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DEA96EC-E287-40AB-BC61-2B31DE5F3054}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DEA96EC-E287-40AB-BC61-2B31DE5F3054}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88F5887A-87B4-43EF-8E19-142C16862912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F5887A-87B4-43EF-8E19-142C16862912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88F5887A-87B4-43EF-8E19-142C16862912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F5887A-87B4-43EF-8E19-142C16862912}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,6 +3,8 @@ using Cinema.Domain.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -22,12 +24,11 @@ namespace ConsoleApp
             _context.AddRange(ReadJsonToList<Postcode>("Postcodes"));
             _context.AddRange(ReadJsonToList<Genre>("Genres"));
             _context.AddRange(ReadJsonToList<AgeRating>("AgeRatings"));
-            _context.AddRange(ReadJsonToList<Theater>("Theater"));
             _context.AddRange(ReadJsonToList<SeatLocation>("SeatLocation"));
             _context.AddRange(ReadJsonToList<Movie>("Movies"));
+            _context.AddRange(ReadJsonToList<Theater>("Theaters"));
             _context.AddRange(GenerateSeatLocation(20, 30));
             _context.SaveChanges();
-
             // Populate the roles in order
             PopulateRoles();
         }
@@ -44,30 +45,53 @@ namespace ConsoleApp
 
         private List<SeatLocation> GenerateSeatLocation(int rows, int seats)
         {
-            var list = new List<SeatLocation>();
+            var seatLocations = new List<SeatLocation>();
 
             for (int i = 1; i <= rows; i++)
             {
                 for (int j = 1; j <= seats; j++)
                 {
-                    list.Add(new SeatLocation() { Row = i, Seat = j });
+                    seatLocations.Add(new SeatLocation() { Row = i, Seat = j });
                 }
             }
 
-            return list;
+            return seatLocations;
         }
+
+        //private List<Theater> GenerateTheater()
+        //{
+        //    List<SeatLocation> seatLocationList = _context.SeatLocations.ToList();
+
+        //    var theaters = new List<Theater>
+        //    {
+        //        new Theater() { TheaterName = "MovieZilla" },
+        //        new Theater() { TheaterName = "Wax on, wax off" },
+        //        new Theater() { TheaterName = "Yippee ki-yay" },
+        //        new Theater() { TheaterName = "To infinity and beyond!" }
+        //    };
+
+        //    return theaters;
+        //}
+
+        //private List<Seat> GenerateSeats(List<SeatLocation> seatLocations, int rows, int seats)
+        //{
+        //    var result = seatLocations.Where(x => x.Seat <= seats && x.Row <= rows).ToList();
+
+        //    return result.Select(sl => new Seat() { SeatLocation = sl }).ToList();
+        //}
 
         private List<T> ReadJsonToList<T>(string file)
         {
-            List<T> list = new List<T>();
+            var outputList = new List<T>();
 
-            using (StreamReader r = new StreamReader($"../../../data/{ file }.json"))
+            //using (StreamReader r = new StreamReader($"../../../data/{ file }.json"))
+            using (StreamReader r = new StreamReader($"data/{ file }.json"))
             {
                 string json = r.ReadToEnd();
-                list = JsonConvert.DeserializeObject<List<T>>(json);
+                outputList = JsonConvert.DeserializeObject<List<T>>(json);
             }
 
-            return list;
+            return outputList;
         }
     }
 }
