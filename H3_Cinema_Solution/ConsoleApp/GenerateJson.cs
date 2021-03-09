@@ -20,7 +20,7 @@ namespace ConsoleApp
         public void GenerateJsonFiles()
         {
             ConvertToJsonFile(GenerateTheater(), "Theaters");
-            ConvertToJsonFile(GenerateSeatLocation(20, 30), "Seats"); 
+            ConvertToJsonFile(GenerateSeatLocation(20, 30), "SeatLocation"); 
 
         }
 
@@ -28,7 +28,7 @@ namespace ConsoleApp
         {
             var json = JsonConvert.SerializeObject(list.ToArray());
 
-            File.WriteAllText($"data/{ fileName }.json", json);
+            File.WriteAllText($"data/{ fileName }.json", json); 
 
             return true;
         }

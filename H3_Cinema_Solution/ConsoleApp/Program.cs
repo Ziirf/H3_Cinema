@@ -23,7 +23,7 @@ namespace ConsoleApp
             _context.Database.EnsureCreated();
 
             // Used temporarily for generating the Json
-            //new GenerateJson(_context).GenerateJsonFiles();
+            new GenerateJson(_context).GenerateJsonFiles();
 
             // Populate the database
             new SeedData(_context).PopulateDatabase();
