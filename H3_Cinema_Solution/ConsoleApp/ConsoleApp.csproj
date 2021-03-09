@@ -13,7 +13,6 @@
     <None Remove="data\Movies.json" />
     <None Remove="data\Postcodes.json" />
     <None Remove="data\Roles.json" />
-    <None Remove="data\SeatLocation.json" />
     <None Remove="data\Theaters.json" />
   </ItemGroup>
 
@@ -37,9 +36,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="data\Roles.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="data\SeatLocation.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="data\Theaters.json">

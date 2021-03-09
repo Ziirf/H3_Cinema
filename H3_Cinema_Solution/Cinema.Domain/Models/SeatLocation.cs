@@ -8,6 +8,6 @@ namespace Cinema.Domain.Models
     {
         public int Id { get; set; }
         public int Row { get; set; }
-        public int Seat { get; set; }
+        public int SeatNumber { get; set; }
     }
 }
