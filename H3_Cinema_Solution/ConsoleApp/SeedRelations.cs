@@ -3,8 +3,6 @@ using Cinema.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ConsoleApp
 {
@@ -28,9 +26,6 @@ namespace ConsoleApp
 
             _context.AddRange(PopulateBookings()); //TODO: Does not check seatID exists in the current theater
             _context.SaveChanges();
-
-
-        
         }
 
         private List<MovieGenre> PopulateMovieGenre()
@@ -92,7 +87,7 @@ namespace ConsoleApp
 
             var result = seatLocationListList.Where(x => x.SeatNumber <= seats && x.Row <= rows).ToList();
 
-            return result.Select(sl => new Seat() { SeatLocation = sl }).ToList();
+            return result.Select(x => new Seat() { SeatLocation = x }).ToList();
         }
 
         
@@ -107,15 +102,15 @@ namespace ConsoleApp
 
         private List<Seat> GenerateSeatTheater(Theater theater)
         {
-            var seatLocation = _context.SeatLocations.ToList();
+            var seatLocations = _context.SeatLocations.ToList();
             var theaterSeats = new List<Seat>();
             int numberOfSeats = theater.Row * theater.SeatNumber;
 
-            seatLocation = seatLocation.OrderBy(x => x.Row).ThenBy(x => x.SeatNumber).ToList();
+            seatLocations = seatLocations.OrderBy(x => x.Row).ThenBy(x => x.SeatNumber).ToList();
 
             for (int i = 0; i < numberOfSeats; i++)
             {
-                theaterSeats.Add(new Seat() {SeatLocation =  seatLocation[i]});
+                theaterSeats.Add(new Seat() { SeatLocation =  seatLocations[i] });
             }
 
             return theaterSeats;
@@ -123,43 +118,63 @@ namespace ConsoleApp
 
         private List<MovieSchedule> PopulateMovieSchedulesNSeats()
         {
-            var movieSchedule = _context.MovieSchedules.ToList();
-            var movie = _context.Movies.ToList();
-            var theater = _context.Theaters.ToList();
-            var rnd = new Random();
-
-            var theaterSeatList = new List<SeatLocation>();
-
-
+            List<MovieSchedule> movieSchedules = _context.MovieSchedules.ToList();
+            List<Movie> movies = _context.Movies.ToList();
+            List<Theater> theaters = _context.Theaters.ToList();
+            Random rnd = new Random();
 
             for (int i = 0; i < 50; i++)
             {
                 int theaterID = rnd.Next(0, 4);
-                movieSchedule.Add(new MovieSchedule() { Movie = movie[i], Theater = theater[theaterID], Time = RandomTime(), Seats = GenerateSeatTheater(theater[theaterID]) });
+                movieSchedules.Add(new MovieSchedule()
+                {
+                    Movie = movies[i], 
+                    Theater = theaters[theaterID], 
+                    Time = RandomTime(), 
+                    Seats = GenerateSeatTheater(theaters[theaterID])
+                });
             }
 
-
-            return movieSchedule;
+            return movieSchedules;
         }
 
         private List<Booking> PopulateBookings()
         {
-            var booking = _context.Bookings.ToList();
-            var customer = _context.Customers.ToList();
-            var movieschedule = _context.MovieSchedules.ToList();
-            var seat = _context.Seats.ToList();
-            var rnd = new Random();
-            int i = 0;
-            foreach (var itemCustomer in customer)
+            List<Booking> bookings = _context.Bookings.ToList();
+            List<Customer> customers = _context.Customers.ToList();
+            List<MovieSchedule> movieSchedules = _context.MovieSchedules.ToList();
+            List<Seat> seats = _context.Seats.ToList();
+            Random rnd = new Random();
+            //int i = 0;
+
+            for (int i = 0; i < customers.Count(); i++)
             {
-                int moviescheduleid = rnd.Next(0, movieschedule.Count);
-                booking.Add(new Booking() {Customer = itemCustomer, MovieSchedule = movieschedule[moviescheduleid], Seat = seat[i] });
-                i++;
+                int moviescheduleid = rnd.Next(0, movieSchedules.Count);
+
+                bookings.Add(new Booking()
+                {
+                    Customer = customers[i],
+                    MovieSchedule = movieSchedules[moviescheduleid],
+                    Seat = seats[i]
+                });
             }
-            
 
 
-            return booking;
+            //foreach (var itemCustomer in customer)
+            //{
+            //    int moviescheduleid = rnd.Next(0, movieschedule.Count);
+
+            //    booking.Add(new Booking()
+            //    {
+            //        Customer = itemCustomer, 
+            //        MovieSchedule = movieschedule[moviescheduleid], 
+            //        Seat = seat[i]
+            //    });
+
+            //    i++;
+            //}
+
+            return bookings;
         }
 
 

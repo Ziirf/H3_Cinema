@@ -1,7 +1,5 @@
-﻿using Cinema.Domain.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cinema.Domain.Models
 {

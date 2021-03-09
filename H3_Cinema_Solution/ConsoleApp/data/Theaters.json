@@ -1,1 +1,26 @@
-[{"Id":0,"TheaterName":"MovieZilla","Row":20,"SeatNumber":30},{"Id":0,"TheaterName":"Wax on, wax off","Row":15,"SeatNumber":30},{"Id":0,"TheaterName":"Yippee ki-yay","Row":10,"SeatNumber":20},{"Id":0,"TheaterName":"To infinity and beyond!","Row":5,"SeatNumber":20}]
+[
+  {
+    "Id": 0,
+    "TheaterName": "MovieZilla",
+    "Row": 20,
+    "SeatNumber": 30
+  },
+  {
+    "Id": 0,
+    "TheaterName": "Wax on, wax off",
+    "Row": 15,
+    "SeatNumber": 30
+  },
+  {
+    "Id": 0,
+    "TheaterName": "Yippee ki-yay",
+    "Row": 10,
+    "SeatNumber": 20
+  },
+  {
+    "Id": 0,
+    "TheaterName": "To infinity and beyond!",
+    "Row": 5,
+    "SeatNumber": 20
+  }
+]

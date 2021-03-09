@@ -1,11 +1,9 @@
-﻿using Cinema.Domain.Models;
-using Cinema.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+﻿using Cinema.Data;
+using Cinema.Domain.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ConsoleApp
 {
@@ -20,7 +18,7 @@ namespace ConsoleApp
         public void GenerateJsonFiles()
         {
             ConvertToJsonFile(GenerateTheater(), "Theaters");
-            ConvertToJsonFile(GenerateSeatLocation(20, 30), "SeatLocation"); 
+            ConvertToJsonFile(GenerateSeatLocation(20, 30), "SeatLocation");
 
         }
 
@@ -28,7 +26,7 @@ namespace ConsoleApp
         {
             var json = JsonConvert.SerializeObject(list.ToArray());
 
-            File.WriteAllText($"data/{ fileName }.json", json); 
+            File.WriteAllText($"data/{ fileName }.json", json);
 
             return true;
         }

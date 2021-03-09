@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -24,12 +23,13 @@ namespace ConsoleApp
             _context.AddRange(ReadJsonToList<Postcode>("Postcodes"));
             _context.AddRange(ReadJsonToList<Genre>("Genres"));
             _context.AddRange(ReadJsonToList<AgeRating>("AgeRatings"));
-            //_context.AddRange(ReadJsonToList<SeatLocation>("SeatLocation"));
+            _context.AddRange(ReadJsonToList<SeatLocation>("SeatLocation"));
             _context.AddRange(ReadJsonToList<Movie>("Movies"));
-            //_context.AddRange(ReadJsonToList<Theater>("Theaters"));
+            _context.AddRange(ReadJsonToList<Theater>("Theaters"));
             _context.AddRange(GenerateSeatLocation(20, 30));
             _context.AddRange(GenerateTheater());
             _context.SaveChanges();
+
             // Populate the roles in order
             PopulateRoles();
         }

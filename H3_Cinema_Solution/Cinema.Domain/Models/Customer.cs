@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-namespace Cinema.Domain.Models
+﻿namespace Cinema.Domain.Models
 
 {
     public class Customer
