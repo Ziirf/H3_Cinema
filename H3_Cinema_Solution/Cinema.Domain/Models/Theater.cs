@@ -6,6 +6,6 @@ namespace Cinema.Domain.Models
     {
         public int Id { get; set; }
         public string TheaterName { get; set; }
-        public ICollection<Seat> Seats { get; set; }
+        //public ICollection<Seat> Seats { get; set; }
     }
 }

@@ -24,11 +24,11 @@ namespace ConsoleApp
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
             _context.UpdateRange(AddSeatsToTheater());
-            _context.AddRange(PopulateMovieSchedules());
+            //_context.AddRange(PopulateMovieSchedules());
             PopulateCustomerPostcode();
             _context.SaveChanges();
 
-            _context.AddRange(PopulateBookings());
+            //_context.AddRange(PopulateBookings());
             _context.SaveChanges();
 
 
@@ -101,12 +101,12 @@ namespace ConsoleApp
         {
 
             var theaterList = _context.Theaters.ToList();
-            var seatlocationlist = _context.SeatLocations.ToList();
+            //var seatlocationlist = _context.SeatLocations.ToList();
 
-            _context.Theaters.Find(theaterList[0].Id).Seats = GenerateSeats(seatlocationlist, 15, 20);
-            _context.Theaters.Find(theaterList[1].Id).Seats = GenerateSeats(seatlocationlist, 10, 20);
-            _context.Theaters.Find(theaterList[2].Id).Seats = GenerateSeats(seatlocationlist, 10, 10);
-            _context.Theaters.Find(theaterList[3].Id).Seats = GenerateSeats(seatlocationlist, 5, 10);
+            //_context.Theaters.Find(theaterList[0].Id).Seats = GenerateSeats(seatlocationlist, 15, 20);
+            //_context.Theaters.Find(theaterList[1].Id).Seats = GenerateSeats(seatlocationlist, 10, 20);
+            //_context.Theaters.Find(theaterList[2].Id).Seats = GenerateSeats(seatlocationlist, 10, 10);
+            //_context.Theaters.Find(theaterList[3].Id).Seats = GenerateSeats(seatlocationlist, 5, 10);
 
 
             return theaterList;
@@ -159,80 +159,80 @@ namespace ConsoleApp
 
         
 
-        private int CheckSeat(int seatId, int movieId)
-        {
-            var bookingseats = _context.BookingSeats.ToList();
-            var bookings = _context.Bookings.ToList();
-            var seats = _context.Seats.ToList();
+        //private int CheckSeat(int seatId, int movieId)
+        //{
+        //    var bookingseats = _context.BookingSeats.ToList();
+        //    var bookings = _context.Bookings.ToList();
+        //    var seats = _context.Seats.ToList();
 
             
 
-            foreach (var bookingseat in bookingseats)
-            {
-                if (bookingseat.SeatId == seatId)
-                {
-                    foreach (var booking in bookings)
-                    {
-                        if (booking.MovieSchedule.Movie.Id == movieId)
-                        {
+        //    foreach (var bookingseat in bookingseats)
+        //    {
+        //        if (bookingseat.SeatId == seatId)
+        //        {
+        //            foreach (var booking in bookings)
+        //            {
+        //                if (booking.MovieSchedule.Movie.Id == movieId)
+        //                {
                             
-                        }
-                    }
-                }
-            }
+        //                }
+        //            }
+        //        }
+        //    }
 
 
-            return 22;
-        }
+        //    return 22;
+        //}
 
-        private List<BookingSeat> populateBookingSeats()
-        {
-            var bookingseats = _context.BookingSeats.ToList();
-            var bookings = _context.Bookings.ToList();
-            var seats = _context.Seats.ToList();
-            var rnd = new Random();
+        //private List<BookingSeat> populateBookingSeats()
+        //{
+        //    var bookingseats = _context.BookingSeats.ToList();
+        //    var bookings = _context.Bookings.ToList();
+        //    var seats = _context.Seats.ToList();
+        //    var rnd = new Random();
 
-            foreach (var booking in bookings) //Lav et sæde til hver film booking
-            {
-                int seatid = rnd.Next(0, seats.Count);
-                //Tjek at seat ikke er tildelt samme movie
+        //    foreach (var booking in bookings) //Lav et sæde til hver film booking
+        //    {
+        //        int seatid = rnd.Next(0, seats.Count);
+        //        //Tjek at seat ikke er tildelt samme movie
                
-                //Lav select i stedet
-                //foreach (var bookingseat in bookingseats)
-                //{
-                //    if (bookingseat.Booking.MovieSchedule.Movie.Id != booking.MovieSchedule.Movie.Id && bookingseat.Seat.Id != seatid)
-                //    {
-                //        bookingseats.Add(new BookingSeat() { Booking = booking, Seat = seats[seatid]});
-                //    }
+        //        //Lav select i stedet
+        //        //foreach (var bookingseat in bookingseats)
+        //        //{
+        //        //    if (bookingseat.Booking.MovieSchedule.Movie.Id != booking.MovieSchedule.Movie.Id && bookingseat.Seat.Id != seatid)
+        //        //    {
+        //        //        bookingseats.Add(new BookingSeat() { Booking = booking, Seat = seats[seatid]});
+        //        //    }
                 
-                //}
+        //        //}
 
 
-            }
+        //    }
 
-            return null;
+        //    return null;
 
-        }
+        //}
 
-        private List<BookingSeat> populateBookingSeats2()
-        {
-            var bookingseats = _context.BookingSeats.ToList();
-            var bookings = _context.Bookings.ToList();
-            var seats = _context.Seats.ToList();
-            var rnd = new Random();
+        //private List<BookingSeat> populateBookingSeats2()
+        //{
+        //    var bookingseats = _context.BookingSeats.ToList();
+        //    var bookings = _context.Bookings.ToList();
+        //    var seats = _context.Seats.ToList();
+        //    var rnd = new Random();
 
-            foreach (var booking in bookings)
-            {
-                int roll = rnd.Next(0, seats.Count);
-                if (!bookingseats.Select(x => x.BookingId).Contains(roll))
-                {
-                    bookingseats.Add(new BookingSeat() { Booking = booking, Seat = seats[roll] });
-                }
+        //    foreach (var booking in bookings)
+        //    {
+        //        int roll = rnd.Next(0, seats.Count);
+        //        if (!bookingseats.Select(x => x.BookingId).Contains(roll))
+        //        {
+        //            bookingseats.Add(new BookingSeat() { Booking = booking, Seat = seats[roll] });
+        //        }
 
-            }
+        //    }
 
-            return bookingseats;
-        }
+        //    return bookingseats;
+        //}
 
         #endregion
 

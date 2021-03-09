@@ -24,10 +24,21 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
             var movies = _context.Bookings
-                .Include(x => x.Customer).ThenInclude(x => x.Postcode)
-                .Include(x => x.MovieSchedule).ThenInclude(x => x.Movie)
-                .Include(x => x.MovieSchedule.Movie.MovieGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieSchedule.Theater)
+                .Include(x => x.Customer)
+                .Include(x => x.MovieSchedule).ThenInclude(x => x.Seats).ThenInclude(x => x.SeatLocation)
+                .Include(x => x.MovieSchedule).ThenInclude(x => x.Theater)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Customer,
+                    Theater = x.MovieSchedule.Theater.TheaterName,
+                    Time = x.MovieSchedule.Time,
+                    Seats = x.MovieSchedule.Seats.Select(x => new
+                    {
+                        x.SeatLocation.Row,
+                        x.SeatLocation.Seat
+                    })
+                })
                 //.Include(x => x.Seats).ThenInclude(x => x.SeatLocation)
                 .ToArrayAsync();
 
