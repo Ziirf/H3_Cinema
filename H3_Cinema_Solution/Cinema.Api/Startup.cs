@@ -27,7 +27,9 @@ namespace Cinema.Api
                     builder => builder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials());
+                        .AllowCredentials()
+                        .WithOrigins("http://localhost:44339"));
+
             });
 
             services.AddControllers().AddNewtonsoftJson(options =>
