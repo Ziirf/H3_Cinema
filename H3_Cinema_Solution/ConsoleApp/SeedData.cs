@@ -26,8 +26,8 @@ namespace ConsoleApp
             _context.AddRange(ReadJsonToList<SeatLocation>("SeatLocation"));
             _context.AddRange(ReadJsonToList<Movie>("Movies"));
             _context.AddRange(ReadJsonToList<Theater>("Theaters"));
-            _context.AddRange(GenerateSeatLocation(20, 30));
-            _context.AddRange(GenerateTheater());
+            //_context.AddRange(GenerateSeatLocation(20, 30));
+            //_context.AddRange(GenerateTheater());
             _context.SaveChanges();
 
             // Populate the roles in order

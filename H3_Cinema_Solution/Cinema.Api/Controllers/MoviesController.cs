@@ -121,38 +121,38 @@ namespace Cinema.Api.Controllers
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDTO);
         }
 
-        // TODO
+        // TODO DELETE
         // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie(int id)
-        {
-            var movie = _context.Movies
-                .Include(x => x.MovieGenres)
-                .Include(x => x.MovieCrews)
-                .FirstOrDefault(x => x.Id == id);
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteMovie(int id)
+        //{
+        //    var movie = _context.Movies
+        //        .Include(x => x.MovieGenres)
+        //        .Include(x => x.MovieCrews)
+        //        .FirstOrDefault(x => x.Id == id);
 
-            var bookings = _context.Bookings.Include(x => x.MovieSchedule).ThenInclude(x => x.Movie).Where(x => x.MovieSchedule.Movie.Id == id).ToList();
+        //    //var bookings = _context.Bookings.Include(x => x.MovieSchedule).ThenInclude(x => x.Movie).Where(x => x.MovieSchedule.Movie.Id == id).ToList();
 
-            var movieScheduels = _context.MovieSchedules.Include(x => x.Movie)
-                .Where(x => x.Movie.Id == id).ToList();
+        //    var movieScheduels = _context.MovieSchedules.Include(x => x.Movie)
+        //        .Where(x => x.Movie.Id == id).ToList();
 
 
-            //var movieDTO = await _context.Movies.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+        //    //var movieDTO = await _context.Movies.FindAsync(id);
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.RemoveRange(bookings);
-            _context.RemoveRange(movieScheduels);
-            _context.RemoveRange(movie.MovieGenres);
-            _context.RemoveRange(movie.MovieCrews);
-            _context.Remove(movie);
+        //    //_context.RemoveRange(bookings);
+        //    _context.RemoveRange(movieScheduels);
+        //    _context.RemoveRange(movie.MovieGenres);
+        //    _context.RemoveRange(movie.MovieCrews);
+        //    _context.Remove(movie);
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         private IIncludableQueryable<Movie, Crew> GetMoviesFromContext()
         {

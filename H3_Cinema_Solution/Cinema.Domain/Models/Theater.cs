@@ -6,6 +6,5 @@
         public string TheaterName { get; set; }
         public int Row { get; set; }
         public int SeatNumber { get; set; }
-        //public ICollection<Seat> Seats { get; set; }
     }
 }

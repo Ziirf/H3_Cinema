@@ -43,7 +43,6 @@ namespace Cinema.Data
             modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.MovieScheduleId }).IsUnique();
             modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId, x.MovieScheduleId }).IsUnique();
             modelBuilder.Entity<Postcode>().HasIndex(x => new { x.Code }).IsUnique();
-            //modelBuilder.Entity<BookingSeat>().HasKey(x => new { x.BookingId, x.SeatId });
         }
 
         public static readonly ILoggerFactory ConsoleLoggerFactory = LoggerFactory.Create(builder =>

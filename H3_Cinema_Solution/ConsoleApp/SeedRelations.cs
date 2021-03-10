@@ -21,10 +21,10 @@ namespace ConsoleApp
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
             _context.AddRange(PopulateMovieSchedulesNSeats());
-            PopulateCustomerPostcode();
+            _context.UpdateRange(PopulateCustomerPostcode());
             _context.SaveChanges();
 
-            _context.AddRange(PopulateBookings()); //TODO: Does not check seatID exists in the current theater
+            _context.AddRange(PopulateBookings());
             _context.SaveChanges();
         }
 
@@ -70,7 +70,7 @@ namespace ConsoleApp
             return movieCrews;
         }
 
-        private void PopulateCustomerPostcode()
+        private List<Customer> PopulateCustomerPostcode()
         {
             List<Customer> customers = _context.Customers.ToList();
             List<Postcode> postcodes = _context.Postcodes.ToList();
@@ -80,17 +80,9 @@ namespace ConsoleApp
             {
                 customer.Postcode = postcodes.OrderBy(x => rnd.Next()).FirstOrDefault();
             }
+
+            return customers;
         }
-
-        private  List<Seat> GenerateSeats(List<SeatLocation> seatLocationListList, int rows, int seats)
-        {
-
-            var result = seatLocationListList.Where(x => x.SeatNumber <= seats && x.Row <= rows).ToList();
-
-            return result.Select(x => new Seat() { SeatLocation = x }).ToList();
-        }
-
-        
         
         private DateTime RandomTime()
         {
@@ -123,7 +115,7 @@ namespace ConsoleApp
             List<Theater> theaters = _context.Theaters.ToList();
             Random rnd = new Random();
 
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 10; i++)
             {
                 int theaterID = rnd.Next(0, 4);
                 movieSchedules.Add(new MovieSchedule()
@@ -142,144 +134,18 @@ namespace ConsoleApp
         {
             List<Booking> bookings = _context.Bookings.ToList();
             List<Customer> customers = _context.Customers.ToList();
-            List<MovieSchedule> movieSchedules = _context.MovieSchedules.ToList();
             List<Seat> seats = _context.Seats.ToList();
-            Random rnd = new Random();
-            //int i = 0;
 
             for (int i = 0; i < customers.Count(); i++)
             {
-                int moviescheduleid = rnd.Next(0, movieSchedules.Count);
-
                 bookings.Add(new Booking()
                 {
                     Customer = customers[i],
-                    MovieSchedule = movieSchedules[moviescheduleid],
                     Seat = seats[i]
                 });
             }
 
-
-            //foreach (var itemCustomer in customer)
-            //{
-            //    int moviescheduleid = rnd.Next(0, movieschedule.Count);
-
-            //    booking.Add(new Booking()
-            //    {
-            //        Customer = itemCustomer, 
-            //        MovieSchedule = movieschedule[moviescheduleid], 
-            //        Seat = seat[i]
-            //    });
-
-            //    i++;
-            //}
-
             return bookings;
         }
-
-
-        #region bookingseats
-
-        
-
-        //private int CheckSeat(int seatId, int movieId)
-        //{
-        //    var bookingseats = _context.BookingSeats.ToList();
-        //    var bookings = _context.Bookings.ToList();
-        //    var seats = _context.Seats.ToList();
-
-            
-
-        //    foreach (var bookingseat in bookingseats)
-        //    {
-        //        if (bookingseat.SeatId == seatId)
-        //        {
-        //            foreach (var booking in bookings)
-        //            {
-        //                if (booking.MovieSchedule.Movie.Id == movieId)
-        //                {
-                            
-        //                }
-        //            }
-        //        }
-        //    }
-
-
-        //    return 22;
-        //}
-
-        //private List<BookingSeat> populateBookingSeats()
-        //{
-        //    var bookingseats = _context.BookingSeats.ToList();
-        //    var bookings = _context.Bookings.ToList();
-        //    var seats = _context.Seats.ToList();
-        //    var rnd = new Random();
-
-        //    foreach (var booking in bookings) //Lav et sæde til hver film booking
-        //    {
-        //        int seatid = rnd.Next(0, seats.Count);
-        //        //Tjek at seat ikke er tildelt samme movie
-               
-        //        //Lav select i stedet
-        //        //foreach (var bookingseat in bookingseats)
-        //        //{
-        //        //    if (bookingseat.Booking.MovieSchedule.Movie.Id != booking.MovieSchedule.Movie.Id && bookingseat.Seat.Id != seatid)
-        //        //    {
-        //        //        bookingseats.Add(new BookingSeat() { Booking = booking, Seat = seats[seatid]});
-        //        //    }
-                
-        //        //}
-
-
-        //    }
-
-        //    return null;
-
-        //}
-
-        //private List<BookingSeat> populateBookingSeats2()
-        //{
-        //    var bookingseats = _context.BookingSeats.ToList();
-        //    var bookings = _context.Bookings.ToList();
-        //    var seats = _context.Seats.ToList();
-        //    var rnd = new Random();
-
-        //    foreach (var booking in bookings)
-        //    {
-        //        int roll = rnd.Next(0, seats.Count);
-        //        if (!bookingseats.Select(x => x.BookingId).Contains(roll))
-        //        {
-        //            bookingseats.Add(new BookingSeat() { Booking = booking, Seat = seats[roll] });
-        //        }
-
-        //    }
-
-        //    return bookingseats;
-        //}
-
-        #endregion
-
-
-        //private List<Theater> GenerateTheater()
-        //{
-        //    List<SeatLocation> seatLocationList = _context.SeatLocations.ToList();
-
-        //    var theaters = new List<Theater>
-        //    {
-        //        new Theater() { TheaterName = "MovieZilla", Seats = GenerateSeats(seatLocationList, 15, 20) },
-        //        new Theater() { TheaterName = "Wax on, wax off", Seats = GenerateSeats(seatLocationList, 10, 20) },
-        //        new Theater() { TheaterName = "Yippee ki-yay", Seats = GenerateSeats(seatLocationList, 10, 10) },
-        //        new Theater() { TheaterName = "To infinity and beyond!", Seats = GenerateSeats(seatLocationList, 5, 10) }
-        //    };
-
-        //    return theaters;
-        //}
-
-        //private List<Seat> GenerateSeats(List<SeatLocation> seatLocations, int rows, int seats)
-        //{
-        //    var result = seatLocations.Where(x => x.Seat <= seats && x.Row <= rows).ToList();
-
-        //    return result.Select(sl => new Seat() { SeatLocation = sl }).ToList();
-        //}
     }
 }
