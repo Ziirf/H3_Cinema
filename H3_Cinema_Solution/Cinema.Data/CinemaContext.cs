@@ -41,7 +41,7 @@ namespace Cinema.Data
             modelBuilder.Entity<MovieGenre>().HasKey(x => new { x.MovieId, x.GenreId });
             modelBuilder.Entity<MovieCrew>().HasKey(x => new { x.MovieId, x.RoleId, x.CrewId });
             modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.MovieScheduleId }).IsUnique();
-            modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId, x.MovieScheduleId }).IsUnique();
+            modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId }).IsUnique();
             modelBuilder.Entity<Postcode>().HasIndex(x => new { x.Code }).IsUnique();
         }
 
