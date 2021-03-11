@@ -17,7 +17,7 @@ namespace ConsoleApp
 
         public void PopulateDatabaseRelation()
         {
-            
+
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
             _context.AddRange(PopulateMovieSchedulesNSeats());
@@ -83,12 +83,12 @@ namespace ConsoleApp
 
             return customers;
         }
-        
+
         private DateTime RandomTime()
         {
             var start = DateTime.Today;
             var rnd = new Random();
-            DateTime result = start.AddDays(rnd.Next(1,30)).AddHours(rnd.Next(8, 24)).AddMinutes(rnd.Next(5,55));
+            DateTime result = start.AddDays(rnd.Next(1, 30)).AddHours(rnd.Next(8, 24)).AddMinutes(rnd.Next(5, 55));
             return result;
         }
 
@@ -98,11 +98,12 @@ namespace ConsoleApp
             var theaterSeats = new List<Seat>();
             int numberOfSeats = theater.Row * theater.SeatNumber;
 
-            seatLocations = seatLocations.OrderBy(x => x.Row).ThenBy(x => x.SeatNumber).ToList();
+            seatLocations = seatLocations.Where(x => x.Row <= theater.Row && x.SeatNumber <= theater.SeatNumber)
+                .OrderBy(x => x.Row).ThenBy(x => x.SeatNumber).ToList();
 
             for (int i = 0; i < numberOfSeats; i++)
             {
-                theaterSeats.Add(new Seat() { SeatLocation =  seatLocations[i] });
+                theaterSeats.Add(new Seat() { SeatLocation = seatLocations[i] });
             }
 
             return theaterSeats;
@@ -120,9 +121,9 @@ namespace ConsoleApp
                 int theaterID = rnd.Next(0, 4);
                 movieSchedules.Add(new MovieSchedule()
                 {
-                    Movie = movies[i], 
-                    Theater = theaters[theaterID], 
-                    Time = RandomTime(), 
+                    Movie = movies[i],
+                    Theater = theaters[theaterID],
+                    Time = RandomTime(),
                     Seats = GenerateSeatTheater(theaters[theaterID])
                 });
             }
