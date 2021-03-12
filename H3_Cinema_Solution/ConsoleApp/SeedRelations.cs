@@ -20,7 +20,7 @@ namespace ConsoleApp
 
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
-            _context.AddRange(PopulateMovieSchedulesNSeats());
+            _context.AddRange(PopulateScreeningsNSeats());
             _context.UpdateRange(PopulateCustomerPostcode());
             _context.SaveChanges();
 
@@ -109,9 +109,9 @@ namespace ConsoleApp
             return theaterSeats;
         }
 
-        private List<MovieSchedule> PopulateMovieSchedulesNSeats()
+        private List<Screening> PopulateScreeningsNSeats()
         {
-            List<MovieSchedule> movieSchedules = _context.MovieSchedules.ToList();
+            List<Screening> Screenings = _context.Screenings.ToList();
             List<Movie> movies = _context.Movies.ToList();
             List<Theater> theaters = _context.Theaters.ToList();
             Random rnd = new Random();
@@ -119,7 +119,7 @@ namespace ConsoleApp
             for (int i = 0; i < 10; i++)
             {
                 int theaterID = rnd.Next(0, 4);
-                movieSchedules.Add(new MovieSchedule()
+                Screenings.Add(new Screening()
                 {
                     Movie = movies[i],
                     Theater = theaters[theaterID],
@@ -128,7 +128,7 @@ namespace ConsoleApp
                 });
             }
 
-            return movieSchedules;
+            return Screenings;
         }
 
         private List<Booking> PopulateBookings()

@@ -25,15 +25,15 @@ namespace Cinema.Api.Controllers
         {
             var movies = _context.Bookings
                 .Include(x => x.Customer)
-                .Include(x => x.Seat).ThenInclude(x => x.MovieSchedule).ThenInclude(x => x.Theater)
+                .Include(x => x.Seat).ThenInclude(x => x.Screening).ThenInclude(x => x.Theater)
                 .Include(x => x.Seat).ThenInclude(x => x.SeatLocation)
                 .Select(x => new
                 {
                     x.Id,
-                    MsId = x.Seat.MovieScheduleId,
+                    MsId = x.Seat.ScreeningId,
                     x.Customer,
-                    Theater = x.Seat.MovieSchedule.Theater.TheaterName,
-                    Time = x.Seat.MovieSchedule.Time,
+                    Theater = x.Seat.Screening.Theater.TheaterName,
+                    Time = x.Seat.Screening.Time,
                     Seats = x.Seat.SeatLocation
                 })
                 //.Include(x => x.Seats).ThenInclude(x => x.SeatLocation)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cinema.Domain.Models
 {
-    public class MovieSchedule
+    public class Screening
     {
         public int Id { get; set; }
         public Movie Movie { get; set; }

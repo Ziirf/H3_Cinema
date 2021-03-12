@@ -131,9 +131,9 @@ namespace Cinema.Api.Controllers
         //        .Include(x => x.MovieCrews)
         //        .FirstOrDefault(x => x.Id == id);
 
-        //    //var bookings = _context.Bookings.Include(x => x.MovieSchedule).ThenInclude(x => x.Movie).Where(x => x.MovieSchedule.Movie.Id == id).ToList();
+        //    //var bookings = _context.Bookings.Include(x => x.Screening).ThenInclude(x => x.Movie).Where(x => x.Screening.Movie.Id == id).ToList();
 
-        //    var movieScheduels = _context.MovieSchedules.Include(x => x.Movie)
+        //    var movieScheduels = _context.Screenings.Include(x => x.Movie)
         //        .Where(x => x.Movie.Id == id).ToList();
 
 

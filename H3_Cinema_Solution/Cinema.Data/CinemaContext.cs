@@ -12,7 +12,7 @@ namespace Cinema.Data
         public DbSet<Postcode> Postcodes { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
-        public DbSet<MovieSchedule> MovieSchedules { get; set; }
+        public DbSet<Screening> Screenings { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<SeatLocation> SeatLocations { get; set; }
         public DbSet<Crew> Crews { get; set; }
@@ -40,7 +40,7 @@ namespace Cinema.Data
         {
             modelBuilder.Entity<MovieGenre>().HasKey(x => new { x.MovieId, x.GenreId });
             modelBuilder.Entity<MovieCrew>().HasKey(x => new { x.MovieId, x.RoleId, x.CrewId });
-            modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.MovieScheduleId }).IsUnique();
+            modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.ScreeningId }).IsUnique();
             modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId }).IsUnique();
             modelBuilder.Entity<Postcode>().HasIndex(x => new { x.Code }).IsUnique();
         }
