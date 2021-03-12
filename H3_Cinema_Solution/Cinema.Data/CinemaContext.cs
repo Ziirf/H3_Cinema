@@ -22,7 +22,6 @@ namespace Cinema.Data
         // Many to many tables
         public DbSet<MovieCrew> MovieCrew { get; set; }
         public DbSet<MovieGenre> MovieGenres { get; set; }
-        public DbSet<BookingSeat> BookingSeats { get; set; }
 
         //public CinemaContext(DbContextOptions<CinemaContext> options)
         //    : base(options)
@@ -34,7 +33,6 @@ namespace Cinema.Data
                 .UseLoggerFactory(ConsoleLoggerFactory)
                 .EnableSensitiveDataLogging()
                 .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema");
-                //.UseSqlServer(@"Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = H3Cinema");
         }
         
 
@@ -42,7 +40,9 @@ namespace Cinema.Data
         {
             modelBuilder.Entity<MovieGenre>().HasKey(x => new { x.MovieId, x.GenreId });
             modelBuilder.Entity<MovieCrew>().HasKey(x => new { x.MovieId, x.RoleId, x.CrewId });
-            modelBuilder.Entity<BookingSeat>().HasKey(x => new { x.BookingId, x.SeatId });
+            modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.MovieScheduleId }).IsUnique();
+            modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId }).IsUnique();
+            modelBuilder.Entity<Postcode>().HasIndex(x => new { x.Code }).IsUnique();
         }
 
         public static readonly ILoggerFactory ConsoleLoggerFactory = LoggerFactory.Create(builder =>

@@ -1,8 +1,8 @@
 ﻿namespace Cinema.Domain.Converters
 {
-    public interface IConverter<TSource, TDestination>
+    public interface IConverter<Model, DTO>
     {
-        TDestination Convert(TSource source);
-        TSource Convert(TDestination destination);
+        DTO Convert(Model source);
+        Model Convert(DTO destination);
     }
 }

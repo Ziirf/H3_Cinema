@@ -28,9 +28,8 @@ namespace Cinema.Api
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()
-                        .WithOrigins("http://localhost:44339"));
-
-            });
+                        .WithOrigins("http://localhost:4200"));
+        });
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

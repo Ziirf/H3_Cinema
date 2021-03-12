@@ -28,7 +28,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies()
         {
             // Gets the movies out of the database and puts it into a list.
-            var movies = await GetMoviesContext().ToListAsync();
+            var movies = await GetMoviesFromContext().ToListAsync();
 
             // Converts the movies into MovieDTO objects and returns them in a list.
             var converter = new MovieConverter();
@@ -37,15 +37,16 @@ namespace Cinema.Api.Controllers
         }
 
         [HttpGet("Random")]
-        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRandom()
+        [HttpGet("Random/{amount}")]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRandom(int amount = 1)
         {
             // Gets the movies out of the database and puts it into a list.
-            var movies = await GetMoviesContext().ToListAsync();
+            var movies = await GetMoviesFromContext().ToListAsync();
 
-            // Picks out 10 random movies and converts them into MovieDTO objects and returns them in a list.
+            // Picks out random movies and converts them into MovieDTO objects and returns them in a list.
             var converter = new MovieConverter();
             var random = new Random();
-            return movies.OrderBy(x => random.Next()).Take(10).Select(movie => converter.Convert(movie)).ToList();
+            return movies.OrderBy(x => random.Next()).Take(amount).Select(movie => converter.Convert(movie)).ToList();
         }
 
         // GET: api/Movies/5
@@ -53,7 +54,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<MovieDTO>> GetMovie(int id)
         {
             // Gets the first movie with the Id into a single.
-            var movie = await GetMoviesContext().FirstOrDefaultAsync(x => x.Id == id);
+            var movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == id);
 
             if (movie == null)
             {
@@ -76,7 +77,7 @@ namespace Cinema.Api.Controllers
             }
 
             // Gets the first movie with the Id into a single.
-            var movie = await GetMoviesContext().FirstOrDefaultAsync(x => x.Id == id);
+            var movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == id);
 
             // Removes the many to many relations.
             _context.RemoveRange(movie.MovieCrews.ToList());
@@ -115,45 +116,45 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             // Get back the movie including its relation to return the movieDTO object.
-            movie = await GetMoviesContext().FirstOrDefaultAsync(x => x.Id == movie.Id);
+            movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == movie.Id);
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDTO);
         }
 
-        // TODO
+        // TODO DELETE
         // DELETE: api/Movies/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie(int id)
-        {
-            var movie = _context.Movies
-                .Include(x => x.MovieGenres)
-                .Include(x => x.MovieCrews)
-                .FirstOrDefault(x => x.Id == id);
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteMovie(int id)
+        //{
+        //    var movie = _context.Movies
+        //        .Include(x => x.MovieGenres)
+        //        .Include(x => x.MovieCrews)
+        //        .FirstOrDefault(x => x.Id == id);
 
-            var bookings = _context.Bookings.Include(x => x.MovieSchedule).ThenInclude(x => x.Movie).Where(x => x.MovieSchedule.Movie.Id == id).ToList();
+        //    //var bookings = _context.Bookings.Include(x => x.MovieSchedule).ThenInclude(x => x.Movie).Where(x => x.MovieSchedule.Movie.Id == id).ToList();
 
-            var movieScheduels = _context.MovieSchedules.Include(x => x.Movie)
-                .Where(x => x.Movie.Id == id).ToList();
+        //    var movieScheduels = _context.MovieSchedules.Include(x => x.Movie)
+        //        .Where(x => x.Movie.Id == id).ToList();
 
 
-            //var movieDTO = await _context.Movies.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
+        //    //var movieDTO = await _context.Movies.FindAsync(id);
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.RemoveRange(bookings);
-            _context.RemoveRange(movieScheduels);
-            _context.RemoveRange(movie.MovieGenres);
-            _context.RemoveRange(movie.MovieCrews);
-            _context.Remove(movie);
+        //    //_context.RemoveRange(bookings);
+        //    _context.RemoveRange(movieScheduels);
+        //    _context.RemoveRange(movie.MovieGenres);
+        //    _context.RemoveRange(movie.MovieCrews);
+        //    _context.Remove(movie);
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        private IIncludableQueryable<Movie, Crew> GetMoviesContext()
+        private IIncludableQueryable<Movie, Crew> GetMoviesFromContext()
         {
             return _context.Movies
                 .Include(x => x.AgeRating)?

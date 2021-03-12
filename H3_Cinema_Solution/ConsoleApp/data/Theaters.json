@@ -1,17 +1,26 @@
 [
   {
-    "TheaterName": "Yippee ki-yay"
+    "Id": 0,
+    "TheaterName": "MovieZilla",
+    "Row": 3,
+    "SeatNumber": 4
   },
   {
-    "TheaterName": "MovieZilla"
+    "Id": 0,
+    "TheaterName": "Wax on, wax off",
+    "Row": 4,
+    "SeatNumber": 5
   },
-
   {
-    "TheaterName": "Wax on, wax off"
+    "Id": 0,
+    "TheaterName": "Yippee ki-yay",
+    "Row": 5,
+    "SeatNumber": 6
   },
-
   {
-    "TheaterName": "To infinity and beyond!"
+    "Id": 0,
+    "TheaterName": "To infinity and beyond!",
+    "Row": 6,
+    "SeatNumber": 7
   }
-
 ]
