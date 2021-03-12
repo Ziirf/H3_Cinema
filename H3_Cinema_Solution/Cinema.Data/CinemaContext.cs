@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Cinema.Domain.Models;
+﻿using Cinema.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Cinema.Data
@@ -34,7 +34,6 @@ namespace Cinema.Data
                 .EnableSensitiveDataLogging()
                 .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema");
         }
-        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +42,7 @@ namespace Cinema.Data
             modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.ScreeningId }).IsUnique();
             modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId }).IsUnique();
             modelBuilder.Entity<Postcode>().HasIndex(x => new { x.Code }).IsUnique();
+            modelBuilder.Entity<AgeRating>().HasIndex(x => new { x.RatingName }).IsUnique();
         }
 
         public static readonly ILoggerFactory ConsoleLoggerFactory = LoggerFactory.Create(builder =>

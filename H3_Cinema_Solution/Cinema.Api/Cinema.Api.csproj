@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Cinema.Converter\Cinema.Converter.csproj" />
 		<ProjectReference Include="..\Cinema.Data\Cinema.Data.csproj" />
 		<ProjectReference Include="..\Cinema.Domain\Cinema.Domain.csproj" />
 	</ItemGroup>

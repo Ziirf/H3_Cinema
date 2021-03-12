@@ -26,10 +26,10 @@ namespace Cinema.Api
                 options.AddPolicy("CorsPolicy",
                     builder => builder.AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials()
-                        .WithOrigins("http://localhost:4200"));
-        });
+                        .AllowAnyHeader());
+                        //.AllowCredentials()
+                        //.WithOrigins("http://localhost:4200"));
+            });
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

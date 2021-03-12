@@ -1,12 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
 
-namespace Cinema.Domain.Converters
+namespace Cinema.Converters
 {
     public class MovieConverter : IConverter<Movie, MovieDTO>
     {
+        private CinemaContext _context;
+        public MovieConverter()
+        {
+            _context = new CinemaContext();
+        }
+
         public MovieDTO Convert(Movie movie)
         {
             // Converts a movie Into a into a movieDTO
@@ -29,6 +36,7 @@ namespace Cinema.Domain.Converters
 
         public Movie Convert(MovieDTO movieDTO)
         {
+
             var crews = new List<MovieCrew>();
             if (movieDTO.Directors != null)
             {
@@ -66,17 +74,16 @@ namespace Cinema.Domain.Converters
                 }));
             }
 
-
-            var movie = new Movie()
+            var movie = new Movie
             {
                 Id = movieDTO.Id,
                 Title = movieDTO.Title,
                 Runtime = movieDTO.Runtime,
                 Rating = movieDTO.Rating,
-                AgeRating = new AgeRating(){ RatingName = movieDTO.AgeRating },
+                AgeRatingId = _context.AgeRatings.FirstOrDefault(x => x.RatingName == movieDTO.AgeRating).Id,
                 ImgUrl = movieDTO.ImgUrl,
                 ReleaseDate = movieDTO.ReleaseDate,
-                MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() { Genre = new Genre() { Name = x } }).ToList(),
+                MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() {Genre = new Genre() {Name = x}}).ToList(),
                 MovieCrews = crews.ToList()
             };
 
@@ -126,12 +133,11 @@ namespace Cinema.Domain.Converters
                 }));
             }
 
-
             movie.Id = movieDTO.Id;
             movie.Title = movieDTO.Title;
             movie.Runtime = movieDTO.Runtime;
             movie.Rating = movieDTO.Rating;
-            movie.AgeRating = new AgeRating() {RatingName = movieDTO.AgeRating};
+            movie.AgeRatingId = _context.AgeRatings.FirstOrDefault(x => x.RatingName == movieDTO.AgeRating).Id;
             movie.ImgUrl = movieDTO.ImgUrl;
             movie.ReleaseDate = movieDTO.ReleaseDate;
             movie.MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() {Genre = new Genre() {Name = x}}).ToList();

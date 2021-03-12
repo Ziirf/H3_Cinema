@@ -9,6 +9,7 @@ namespace Cinema.Domain.Models
         public string Title { get; set; }
         public int Runtime { get; set; }
         public float Rating { get; set; }
+        public int? AgeRatingId { get; set; }
         public AgeRating AgeRating { get; set; }
         public string ImgUrl { get; set; }
         public DateTime? ReleaseDate { get; set; }

@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinema.Converter;
+using Cinema.Domain.DTOs;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Cinema.Api.Controllers
 {
@@ -13,31 +16,35 @@ namespace Cinema.Api.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly CinemaContext _context;
+        private readonly CustomerConverter _converter;
 
         public CustomersController(CinemaContext context)
         {
             _context = context;
+            _converter = new CustomerConverter();
         }
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetCustomers()
         {
-            return await _context.Customers.Include(x => x.Postcode).OrderBy(x => x.Id).ToListAsync();
+            var customers = await GetCustomersFromContext().ToListAsync();
+
+            return customers.Select(x => _converter.Convert(x)).OrderBy(x => x.Id).ToList();
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
         {
-            var customer = await _context.Customers.Include(x => x.Postcode).FirstOrDefaultAsync(x => x.Id == id);
+            var customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == id);
 
             if (customer == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            return _converter.Convert(customer);
         }
 
         // PUT: api/Customers/5
@@ -72,14 +79,17 @@ namespace Cinema.Api.Controllers
 
         // POST: api/Customers
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<CustomerDTO>> PostCustomer(CustomerDTO customerDTO)
         {
-            customer.Postcode = _context.Postcodes.FirstOrDefault(x => x.Code == customer.Postcode.Code);
+            Customer customer = _converter.Convert(customerDTO);
 
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == customer.Id);
+            
+            //return CreatedAtAction("GetCustomer", new { id = customer.Id }, _converter.Convert(customer));
+            return  _converter.Convert(customer);
         }
 
         // DELETE: api/Customers/5
@@ -87,7 +97,7 @@ namespace Cinema.Api.Controllers
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             var customer = await _context.Customers.Include(x => x.Postcode).FirstOrDefaultAsync(x => x.Id == id);
-            //var customer = await _context.Customers.FindAsync(id);
+            //var customerDTO = await _context.Customers.FindAsync(id);
             if (customer == null)
             {
                 return NotFound();
@@ -97,6 +107,10 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+        private IIncludableQueryable<Customer, Postcode> GetCustomersFromContext()
+        {
+            return _context.Customers.Include(x => x.Postcode);
         }
 
         private bool CustomerExists(int id)

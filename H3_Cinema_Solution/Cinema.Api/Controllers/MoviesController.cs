@@ -1,6 +1,6 @@
 ﻿using System;
 using Cinema.Data;
-using Cinema.Domain.Converters;
+using Cinema.Converters;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +17,12 @@ namespace Cinema.Api.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly CinemaContext _context;
+        private readonly MovieConverter _converter;
 
         public MoviesController(CinemaContext context)
         {
             _context = context;
+            _converter = new MovieConverter();
         }
 
         // GET: api/Movies
@@ -30,10 +32,7 @@ namespace Cinema.Api.Controllers
             // Gets the movies out of the database and puts it into a list.
             var movies = await GetMoviesFromContext().ToListAsync();
 
-            // Converts the movies into MovieDTO objects and returns them in a list.
-            var converter = new MovieConverter();
-
-            return movies.Select(movie => converter.Convert(movie)).ToList();
+            return movies.Select(movie => _converter.Convert(movie)).ToList();
         }
 
         [HttpGet("Random")]
@@ -44,9 +43,8 @@ namespace Cinema.Api.Controllers
             var movies = await GetMoviesFromContext().ToListAsync();
 
             // Picks out random movies and converts them into MovieDTO objects and returns them in a list.
-            var converter = new MovieConverter();
             var random = new Random();
-            return movies.OrderBy(x => random.Next()).Take(amount).Select(movie => converter.Convert(movie)).ToList();
+            return movies.OrderBy(x => random.Next()).Take(amount).Select(movie => _converter.Convert(movie)).ToList();
         }
 
         // GET: api/Movies/5
@@ -62,9 +60,7 @@ namespace Cinema.Api.Controllers
             }
 
             // Converts the movie into a movieDTO and returns it.
-            var converter = new MovieConverter();
-
-            return converter.Convert(movie);
+            return _converter.Convert(movie);
         }
 
         // PUT: api/Movies/5
@@ -84,8 +80,7 @@ namespace Cinema.Api.Controllers
             _context.RemoveRange(movie.MovieGenres.ToList());
 
             // Transfers the data from the DTO to the DOCO without making a new instance.
-            var converter = new MovieConverter();
-            movie = converter.Transfer(movie, movieDTO);
+            movie = _converter.Transfer(movie, movieDTO);
 
             if (movie == null)
             {
@@ -108,15 +103,14 @@ namespace Cinema.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Movie>> PostMovie(MovieDTO movieDTO)
         {
-            var converter = new MovieConverter();
-
             // Convert the DTO into DOCO in order to store it in the database.
-            var movie = converter.Convert(movieDTO);
+            var movie = _converter.Convert(movieDTO);
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
             // Get back the movie including its relation to return the movieDTO object.
             movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == movie.Id);
+            movieDTO = _converter.Convert(movie);
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDTO);
         }
