@@ -4,6 +4,5 @@
     {
         DTO Convert(Model model);
         Model Convert(DTO dto);
-        //Model Transfer(Model model, DTO dto);
     }
 }

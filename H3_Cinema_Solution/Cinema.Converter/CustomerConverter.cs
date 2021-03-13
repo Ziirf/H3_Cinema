@@ -14,7 +14,6 @@ namespace Cinema.Converter
             _context = new CinemaContext();
         }
 
-
         public CustomerDTO Convert(Customer customer)
         {
             var customerDTO = new CustomerDTO
@@ -56,18 +55,5 @@ namespace Cinema.Converter
 
             return customer;
         }
-
-        //public Customer Transfer(Customer customer, CustomerDTO customerDTO)
-        //{
-        //    customer.Id = customerDTO.Id;
-        //    customer.FirstName = customerDTO.FirstName;
-        //    customer.LastName = customerDTO.LastName;
-        //    customer.Address = customerDTO.Address;
-        //    customer.PostcodeId = _context.Postcodes.FirstOrDefault(x => x.Code == customerDTO.Postcode).Id;
-        //    customer.PhoneNumber = customerDTO.PhoneNumber;
-        //    customer.Email = customerDTO.Email;
-
-        //    return customer;
-        //}
     }
 }
