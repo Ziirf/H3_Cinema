@@ -63,6 +63,40 @@ namespace Cinema.Api.Controllers
             return _converter.Convert(movie);
         }
 
+        //// PUT: api/Movies/5
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutMovie(int id, MovieDTO movieDTO)
+        //{
+        //    if (id != movieDTO.Id)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    // Gets the first movie with the Id into a single.
+        //    var movie = await GetMoviesFromContext().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+        //    // Removes the many to many relations.
+        //    _context.RemoveRange(movie.MovieCrews.ToList());
+        //    _context.RemoveRange(movie.MovieGenres.ToList());
+
+        //    // Transfers the data from the DTO to the DOCO without making a new instance.
+        //    //movie = _converter.Transfer(movie, movieDTO);
+        //    movie = _converter.Convert(movieDTO);
+
+        //    _context.Entry(movie).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException) when (!MovieExists(id))
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return NoContent();
+        //}
+
         // PUT: api/Movies/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, MovieDTO movieDTO)
@@ -72,20 +106,18 @@ namespace Cinema.Api.Controllers
                 return BadRequest();
             }
 
-            // Gets the first movie with the Id into a single.
-            var movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == id);
+            var movie = _converter.Convert(movieDTO);
 
             // Removes the many to many relations.
-            _context.RemoveRange(movie.MovieCrews.ToList());
-            _context.RemoveRange(movie.MovieGenres.ToList());
+            _context.RemoveRange(_context.MovieCrew.Where(x => x.MovieId == movieDTO.Id));
+            _context.RemoveRange(_context.MovieGenres.Where(x => x.MovieId == movieDTO.Id));
 
-            // Transfers the data from the DTO to the DOCO without making a new instance.
-            movie = _converter.Transfer(movie, movieDTO);
+            // Adding new many to many relations.
+            _context.MovieCrew.AddRange(movie.MovieCrews);
+            _context.MovieGenres.AddRange(movie.MovieGenres);
 
-            if (movie == null)
-            {
-                return NotFound();
-            }
+            // Updating the Entry
+            _context.Entry(movie).State = EntityState.Modified;
 
             try
             {

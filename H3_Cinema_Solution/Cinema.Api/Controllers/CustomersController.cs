@@ -49,12 +49,14 @@ namespace Cinema.Api.Controllers
 
         // PUT: api/Customers/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        public async Task<IActionResult> PutCustomer(int id, CustomerDTO customerDTO)
         {
-            if (id != customer.Id)
+            if (id != customerDTO.Id)
             {
                 return BadRequest();
             }
+
+            var customer = _converter.Convert(customerDTO);
 
             _context.Entry(customer).State = EntityState.Modified;
 
@@ -87,30 +89,30 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == customer.Id);
-            
-            //return CreatedAtAction("GetCustomer", new { id = customer.Id }, _converter.Convert(customer));
-            return  _converter.Convert(customer);
+
+            return CreatedAtAction("GetCustomer", new { id = customer.Id }, _converter.Convert(customer));
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
-            var customer = await _context.Customers.Include(x => x.Postcode).FirstOrDefaultAsync(x => x.Id == id);
-            //var customerDTO = await _context.Customers.FindAsync(id);
+            var customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == id);
+
             if (customer == null)
             {
                 return NotFound();
             }
 
             _context.Remove(customer);
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
+            
             return NoContent();
         }
-        private IIncludableQueryable<Customer, Postcode> GetCustomersFromContext()
+        private IIncludableQueryable<Customer, ICollection<Booking>> GetCustomersFromContext()
         {
-            return _context.Customers.Include(x => x.Postcode);
+            return _context.Customers.Include(x => x.Postcode).Include(x => x.Bookings);
         }
 
         private bool CustomerExists(int id)

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Cinema.Converters;
+﻿using Cinema.Converters;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using System.Linq;
 
 namespace Cinema.Converter
 {
@@ -20,31 +17,57 @@ namespace Cinema.Converter
 
         public CustomerDTO Convert(Customer customer)
         {
-            return new CustomerDTO
+            var customerDTO = new CustomerDTO
             {
                 Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 Address = customer.Address,
-                Postcode = customer.Postcode.Code,
-                City = customer.Postcode.City,
                 PhoneNumber = customer.PhoneNumber,
                 Email = customer.Email
             };
+
+            if (customer.Postcode != null)
+            {
+                customerDTO.Postcode = customer.Postcode.Code;
+                customerDTO.City = customer.Postcode.City;
+            }
+
+            return customerDTO;
         }
 
         public Customer Convert(CustomerDTO customerDTO)
         {
-            return new Customer
+            var customer = new Customer
             {
                 Id = customerDTO.Id,
                 FirstName = customerDTO.FirstName,
-                LastName = customerDTO.FirstName,
+                LastName = customerDTO.LastName,
                 Address = customerDTO.Address,
-                PostcodeId = _context.Postcodes.FirstOrDefault(x => x.Code == customerDTO.Postcode).Id,
                 PhoneNumber = customerDTO.PhoneNumber,
                 Email = customerDTO.Email
             };
+
+            Postcode postcode = _context.Postcodes.FirstOrDefault(x => x.Code == customerDTO.Postcode);
+            if (postcode != null)
+            {
+                customer.PostcodeId = postcode.Id;
+            }
+
+            return customer;
         }
+
+        //public Customer Transfer(Customer customer, CustomerDTO customerDTO)
+        //{
+        //    customer.Id = customerDTO.Id;
+        //    customer.FirstName = customerDTO.FirstName;
+        //    customer.LastName = customerDTO.LastName;
+        //    customer.Address = customerDTO.Address;
+        //    customer.PostcodeId = _context.Postcodes.FirstOrDefault(x => x.Code == customerDTO.Postcode).Id;
+        //    customer.PhoneNumber = customerDTO.PhoneNumber;
+        //    customer.Email = customerDTO.Email;
+
+        //    return customer;
+        //}
     }
 }

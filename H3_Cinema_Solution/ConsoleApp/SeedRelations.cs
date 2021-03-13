@@ -22,6 +22,7 @@ namespace ConsoleApp
             _context.AddRange(PopulateMovieCrew());
             _context.AddRange(PopulateScreeningsNSeats());
             _context.UpdateRange(PopulateCustomerPostcode());
+            _context.UpdateRange(PopulateMovieAgeRating());
             _context.SaveChanges();
 
             _context.AddRange(PopulateBookings());
@@ -82,6 +83,20 @@ namespace ConsoleApp
             }
 
             return customers;
+        }
+
+        private List<Movie> PopulateMovieAgeRating()
+        {
+            List<Movie> movies = _context.Movies.ToList();
+            List<AgeRating> ageRatings = _context.AgeRatings.ToList();
+            var rnd = new Random();
+
+            foreach (var movie in movies)
+            {
+                movie.AgeRating = ageRatings.OrderBy(x => rnd.Next()).FirstOrDefault();
+            }
+
+            return movies;
         }
 
         private DateTime RandomTime()

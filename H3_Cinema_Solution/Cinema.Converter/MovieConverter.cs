@@ -42,6 +42,7 @@ namespace Cinema.Converters
             {
                 crews.AddRange(movieDTO.Directors.Select(x => new MovieCrew
                 {
+                    MovieId = movieDTO.Id,
                     RoleId = 1,
                     CrewId = x.Id
                 }));
@@ -51,6 +52,7 @@ namespace Cinema.Converters
             {
                 crews.AddRange(movieDTO.ScreenWriters.Select(x => new MovieCrew
                 {
+                    MovieId = movieDTO.Id,
                     RoleId = 2,
                     CrewId = x.Id
                 }));
@@ -60,6 +62,7 @@ namespace Cinema.Converters
             {
                 crews.AddRange(movieDTO.ScriptWriters.Select(x => new MovieCrew
                 {
+                    MovieId = movieDTO.Id,
                     RoleId = 3,
                     CrewId = x.Id
                 }));
@@ -69,6 +72,7 @@ namespace Cinema.Converters
             {
                 crews.AddRange(movieDTO.Actors.Select(x => new MovieCrew
                 {
+                    MovieId = movieDTO.Id,
                     RoleId = 4,
                     CrewId = x.Id
                 }));
@@ -90,60 +94,60 @@ namespace Cinema.Converters
             return movie;
         }
 
-        public Movie Transfer(Movie movie, MovieDTO movieDTO)
-        {
-            var crews = new List<MovieCrew>();
-            if (movieDTO.Directors != null)
-            {
-                crews.AddRange(movieDTO.Directors.Select(x => new MovieCrew
-                {
-                    MovieId = movie.Id,
-                    RoleId = 1,
-                    CrewId = x.Id
-                }));
-            }
+        //public Movie Transfer(Movie movie, MovieDTO movieDTO)
+        //{
+        //    var crews = new List<MovieCrew>();
+        //    if (movieDTO.Directors != null)
+        //    {
+        //        crews.AddRange(movieDTO.Directors.Select(x => new MovieCrew
+        //        {
+        //            MovieId = movie.Id,
+        //            RoleId = 1,
+        //            CrewId = x.Id
+        //        }));
+        //    }
 
-            if (movieDTO.ScreenWriters != null)
-            {
-                crews.AddRange(movieDTO.ScreenWriters.Select(x => new MovieCrew
-                {
-                    MovieId = movie.Id,
-                    RoleId = 2,
-                    CrewId = x.Id
-                }));
-            }
+        //    if (movieDTO.ScreenWriters != null)
+        //    {
+        //        crews.AddRange(movieDTO.ScreenWriters.Select(x => new MovieCrew
+        //        {
+        //            MovieId = movie.Id,
+        //            RoleId = 2,
+        //            CrewId = x.Id
+        //        }));
+        //    }
 
-            if (movieDTO.ScriptWriters != null)
-            {
-                crews.AddRange(movieDTO.ScriptWriters.Select(x => new MovieCrew
-                {
-                    MovieId = movie.Id,
-                    RoleId = 3,
-                    CrewId = x.Id
-                }));
-            }
+        //    if (movieDTO.ScriptWriters != null)
+        //    {
+        //        crews.AddRange(movieDTO.ScriptWriters.Select(x => new MovieCrew
+        //        {
+        //            MovieId = movie.Id,
+        //            RoleId = 3,
+        //            CrewId = x.Id
+        //        }));
+        //    }
 
-            if (movieDTO.Actors != null)
-            {
-                crews.AddRange(movieDTO.Actors.Select(x => new MovieCrew
-                {
-                    MovieId = movie.Id,
-                    RoleId = 4,
-                    CrewId = x.Id
-                }));
-            }
+        //    if (movieDTO.Actors != null)
+        //    {
+        //        crews.AddRange(movieDTO.Actors.Select(x => new MovieCrew
+        //        {
+        //            MovieId = movie.Id,
+        //            RoleId = 4,
+        //            CrewId = x.Id
+        //        }));
+        //    }
 
-            movie.Id = movieDTO.Id;
-            movie.Title = movieDTO.Title;
-            movie.Runtime = movieDTO.Runtime;
-            movie.Rating = movieDTO.Rating;
-            movie.AgeRatingId = _context.AgeRatings.FirstOrDefault(x => x.RatingName == movieDTO.AgeRating).Id;
-            movie.ImgUrl = movieDTO.ImgUrl;
-            movie.ReleaseDate = movieDTO.ReleaseDate;
-            movie.MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() {Genre = new Genre() {Name = x}}).ToList();
-            movie.MovieCrews = crews.ToList();
+        //    movie.Id = movieDTO.Id;
+        //    movie.Title = movieDTO.Title;
+        //    movie.Runtime = movieDTO.Runtime;
+        //    movie.Rating = movieDTO.Rating;
+        //    movie.AgeRatingId = _context.AgeRatings.FirstOrDefault(x => x.RatingName == movieDTO.AgeRating).Id;
+        //    movie.ImgUrl = movieDTO.ImgUrl;
+        //    movie.ReleaseDate = movieDTO.ReleaseDate;
+        //    movie.MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() {Genre = new Genre() {Name = x}}).ToList();
+        //    movie.MovieCrews = crews.ToList();
 
-            return movie;
-        }
+        //    return movie;
+        //}
     }
 }
