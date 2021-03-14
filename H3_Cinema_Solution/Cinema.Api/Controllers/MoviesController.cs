@@ -39,15 +39,16 @@ namespace Cinema.Api.Controllers
         // GET: api/Movies/Random/10
         [HttpGet("Random")]
         [HttpGet("Random/{amount}")]
-        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRandom(int amount = 1)
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRandom(int amount = 20)
         {
             // Gets the movies out of the database and puts it into a list.
-            var movies = GetMoviesFromContext();
+            var movies = await GetMoviesFromContext().ToListAsync();
 
             // Picks out random movies and converts them into MovieDTO objects and returns them in a list.
-            var random = new Random();
+            var rnd = new Random();
 
-            return await movies.OrderBy(x => random.Next()).Take(amount).Select(movie => _converter.Convert(movie)).ToListAsync();
+            return movies.ToList().OrderBy(x => rnd.Next()).Take(amount)
+                .Select(movie => _converter.Convert(movie)).ToList();
         }
 
         // GET: api/Movies/5
