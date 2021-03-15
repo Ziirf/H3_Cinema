@@ -35,6 +35,15 @@ namespace Cinema.Api.Controllers
             return await movies.Select(movie => _converter.Convert(movie)).ToListAsync();
         }
 
+        [HttpGet("Range/{start}-{end}")]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRange(int start, int end)
+        {
+            // Gets the movies out of the database.
+            var movies = GetMoviesFromContext();
+
+            return await movies.Select(movie => _converter.Convert(movie)).Skip(start).Take(end - start).ToListAsync();
+        }
+
         // GET: api/Movies/Random
         // GET: api/Movies/Random/10
         [HttpGet("Random")]
