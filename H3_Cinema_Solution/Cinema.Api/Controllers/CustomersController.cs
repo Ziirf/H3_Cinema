@@ -21,7 +21,7 @@ namespace Cinema.Api.Controllers
         public CustomersController(CinemaContext context)
         {
             _context = context;
-            _converter = new CustomerConverter();
+            _converter = new CustomerConverter(context);
         }
 
         // GET: api/Customers
@@ -29,9 +29,9 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetCustomers()
         {
             // Gets the customers out of the database.
-            var customers = GetCustomersFromContext();
+            var customers = await GetCustomersFromContext().ToListAsync();
 
-            return await customers.Select(x => _converter.Convert(x)).OrderBy(x => x.Id).ToListAsync();
+            return customers.Select(x => _converter.Convert(x)).OrderBy(x => x.Id).ToList();
         }
 
         // GET: api/Customers/5

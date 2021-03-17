@@ -8,16 +8,17 @@ namespace ConsoleApp
 {
     class SeedRelations
     {
-        private CinemaContext _context;
+        private readonly CinemaContext _context;
+        private readonly Random _random;
         public SeedRelations(CinemaContext context)
         {
             _context = context;
+            _random = new Random();
         }
 
 
         public void PopulateDatabaseRelation()
         {
-
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
             _context.AddRange(PopulateScreeningsNSeats());
@@ -31,14 +32,13 @@ namespace ConsoleApp
 
         private List<MovieGenre> PopulateMovieGenre()
         {
-            Random rnd = new Random();
             List<MovieGenre> movieGenres = _context.MovieGenres.ToList();
             List<Movie> movies = _context.Movies.ToList();
             List<Genre> genres = _context.Genres.ToList();
 
             foreach (var movie in movies)
             {
-                List<Genre> randomGenres = genres.OrderBy(x => rnd.Next()).Take(rnd.Next(1, 4)).ToList();
+                List<Genre> randomGenres = genres.OrderBy(x => _random.Next()).Take(_random.Next(1, 4)).ToList();
                 foreach (var randomGenre in randomGenres)
                 {
                     movieGenres.Add(new MovieGenre() { Movie = movie, Genre = randomGenre });
@@ -50,7 +50,6 @@ namespace ConsoleApp
 
         private List<MovieCrew> PopulateMovieCrew()
         {
-            Random rnd = new Random();
             List<MovieCrew> movieCrews = _context.MovieCrew.ToList();
             List<Movie> movies = _context.Movies.ToList();
             List<Crew> crew = _context.Crews.ToList();
@@ -58,11 +57,11 @@ namespace ConsoleApp
 
             foreach (var movie in movies)
             {
-                List<Crew> randomCrews = crew.OrderBy(x => rnd.Next()).Take(rnd.Next(3, 10)).ToList();
+                List<Crew> randomCrews = crew.OrderBy(x => _random.Next()).Take(_random.Next(3, 10)).ToList();
 
                 foreach (var randomCrew in randomCrews)
                 {
-                    Role randomRole = roles.OrderBy(x => rnd.Next()).First();
+                    Role randomRole = roles.OrderBy(x => _random.Next()).First();
                     movieCrews.Add(new MovieCrew() { Movie = movie, Crew = randomCrew, Role = randomRole });
                 }
 
@@ -89,11 +88,10 @@ namespace ConsoleApp
         {
             List<Movie> movies = _context.Movies.ToList();
             List<AgeRating> ageRatings = _context.AgeRatings.ToList();
-            var rnd = new Random();
 
             foreach (var movie in movies)
             {
-                movie.AgeRating = ageRatings.OrderBy(x => rnd.Next()).FirstOrDefault();
+                movie.AgeRating = ageRatings.OrderBy(x => _random.Next()).FirstOrDefault();
             }
 
             return movies;
@@ -102,8 +100,7 @@ namespace ConsoleApp
         private DateTime RandomTime()
         {
             var start = DateTime.Today;
-            var rnd = new Random();
-            DateTime result = start.AddDays(rnd.Next(1, 30)).AddHours(rnd.Next(8, 24)).AddMinutes(rnd.Next(5, 55));
+            DateTime result = start.AddDays(_random.Next(1, 30)).AddHours(_random.Next(8, 24)).AddMinutes(_random.Next(5, 55));
             return result;
         }
 
@@ -129,11 +126,10 @@ namespace ConsoleApp
             List<Screening> Screenings = _context.Screenings.ToList();
             List<Movie> movies = _context.Movies.ToList();
             List<Theater> theaters = _context.Theaters.ToList();
-            Random rnd = new Random();
 
             for (int i = 0; i < 10; i++)
             {
-                int theaterID = rnd.Next(0, 4);
+                int theaterID = _random.Next(0, 4);
                 Screenings.Add(new Screening()
                 {
                     Movie = movies[i],

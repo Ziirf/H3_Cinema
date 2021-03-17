@@ -22,7 +22,7 @@ namespace Cinema.Api.Controllers
         public MoviesController(CinemaContext context)
         {
             _context = context;
-            _converter = new MovieConverter();
+            _converter = new MovieConverter(context);
         }
 
         // GET: api/Movies
@@ -114,7 +114,7 @@ namespace Cinema.Api.Controllers
 
         // POST: api/Movies
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(MovieDTO movieDTO)
+        public async Task<ActionResult<MovieDTO>> PostMovie(MovieDTO movieDTO)
         {
             // Converts into a movie model.
             Movie movie = _converter.Convert(movieDTO);

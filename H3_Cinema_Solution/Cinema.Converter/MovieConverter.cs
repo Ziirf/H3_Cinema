@@ -8,10 +8,10 @@ namespace Cinema.Converters
 {
     public class MovieConverter : IConverter<Movie, MovieDTO>
     {
-        private CinemaContext _context;
-        public MovieConverter()
+        private readonly CinemaContext _context;
+        public MovieConverter(CinemaContext context)
         {
-            _context = new CinemaContext();
+            _context = context;
         }
 
         public MovieDTO Convert(Movie movie)
@@ -86,7 +86,8 @@ namespace Cinema.Converters
                 Rating = movieDTO.Rating,
                 ImgUrl = movieDTO.ImgUrl,
                 ReleaseDate = movieDTO.ReleaseDate,
-                MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() { Genre = new Genre() { Name = x } }).ToList(),
+                MovieGenres = new List<MovieGenre>(),
+                //MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() { Genre = new Genre() { Name = x } }).ToList(),
                 MovieCrews = crews.ToList()
             };
 
@@ -94,6 +95,20 @@ namespace Cinema.Converters
             if (ageRating != null)
             {
                 movie.AgeRatingId = ageRating.Id;
+            }
+
+            if (movieDTO.Genre != null)
+            {
+                foreach (var genre in movieDTO.Genre)
+                {
+                    var asd = _context.Genres.FirstOrDefault(x => x.Name == genre).Id;
+
+                    movie.MovieGenres.Add(new MovieGenre
+                    {
+                        MovieId = movieDTO.Id,
+                        GenreId = asd
+                    });
+                }
             }
 
             return movie;

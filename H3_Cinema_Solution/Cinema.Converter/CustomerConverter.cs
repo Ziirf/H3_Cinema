@@ -8,10 +8,10 @@ namespace Cinema.Converter
 {
     public class CustomerConverter : IConverter<Customer, CustomerDTO>
     {
-        private CinemaContext _context;
-        public CustomerConverter()
+        private readonly CinemaContext _context;
+        public CustomerConverter(CinemaContext context)
         {
-            _context = new CinemaContext();
+            _context = context;
         }
 
         public CustomerDTO Convert(Customer customer)
