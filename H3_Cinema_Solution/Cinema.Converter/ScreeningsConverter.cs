@@ -29,9 +29,29 @@ namespace Cinema.Converter
             };
         }
 
-        public Screening Convert(ScreeningDTO dto)
+        public Screening Convert(ScreeningDTO screeningDTO)
         {
-            throw new System.NotImplementedException();
+            Movie movie = _context.Movies.FirstOrDefault(x => x.Title == screeningDTO.Movie);
+            Theater theater = _context.Theaters.FirstOrDefault(x => x.TheaterName == screeningDTO.Theater);
+            Screening screening = new Screening
+            {
+                Id = screeningDTO.Id,
+                Movie = movie,
+                Theater = theater,
+                Time = screeningDTO.Time
+            };
+
+            screening.Seats = new List<Seat>();
+            var seatLocations = _context.SeatLocations
+                .Where(x => x.Row <= screening.Theater.Row && x.SeatNumber <= screening.Theater.SeatNumber)
+                .OrderBy(x => x.Row).ThenBy(x => x.SeatNumber).ToList();
+
+            foreach (var seatLocation in seatLocations)
+            {
+                screening.Seats.Add(new Seat() { SeatLocation = seatLocation });
+            }
+
+            return screening;
         }
     }
 }

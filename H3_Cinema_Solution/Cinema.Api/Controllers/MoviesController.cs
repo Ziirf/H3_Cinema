@@ -136,14 +136,14 @@ namespace Cinema.Api.Controllers
             // Get the relevant movie.
             Movie movie = GetMoviesFromContext().FirstOrDefault(x => x.Id == id);
 
-            // Get the relevant screenings that are relevant to the movie.
-            List<Screening> screenings = await _context.Screenings.Include(x => x.Movie)
-                .Where(x => x.Movie.Id == id).ToListAsync();
-
             if (movie == null)
             {
                 return NotFound();
             }
+
+            // Get the relevant screenings that are relevant to the movie.
+            List<Screening> screenings = await _context.Screenings.Include(x => x.Movie)
+                .Where(x => x.Movie.Id == id).ToListAsync();
 
             // Deletes the movie and the screenings.
             _context.RemoveRange(screenings);

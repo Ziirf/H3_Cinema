@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Cinema.Converter;
-using Cinema.Converters;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Cinema.Converter;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cinema.Api.Controllers
 {
@@ -50,15 +47,40 @@ namespace Cinema.Api.Controllers
             return _screeningsConverter.Convert(screening);
         }
 
+        // GET: api/Screenings/Movie/5
+        [HttpGet("Movie/{id}")]
+        public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreeningByMovieId(int id)
+        {
+            var screenings = await GetScreeningsFromContext().Where(x => x.Movie.Id == id).ToListAsync();
+
+            if (screenings == null)
+            {
+                return NotFound();
+            }
+
+            return screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
+        }
+
         // PUT: api/Screenings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        /*[HttpPut("{id}")]
-        public async Task<IActionResult> PutScreening(int id, Screening screening)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutScreening(int id, ScreeningDTO screeningDTO)
         {
-            if (id != screening.Id)
+            //var asd = screeningDTO.Seats.Where(x => x.IsBooked == true).Count();
+            var amountBooked = _context.Bookings.Where(x => x.Seat.ScreeningId == id).Count();
+
+            if (id != screeningDTO.Id)
             {
                 return BadRequest();
             }
+
+            if (amountBooked > 0)
+            {
+                return Problem("Can't edit a movie that got bookings");
+            }
+
+            Screening screening = _screeningsConverter.Convert(screeningDTO);
+            //_context.RemoveRange(_context.Seats.Where(x => x.ScreeningId == id));
 
             _context.Entry(screening).State = EntityState.Modified;
 
@@ -84,12 +106,14 @@ namespace Cinema.Api.Controllers
         // POST: api/Screenings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Screening>> PostScreening(Screening screening)
+        public async Task<ActionResult<Screening>> PostScreening(ScreeningDTO screeningDTO)
         {
+            Screening screening = _screeningsConverter.Convert(screeningDTO);
+
             _context.Screenings.Add(screening);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetScreening", new { id = screening.Id }, screening);
+            return CreatedAtAction("GetScreening", new { id = screening.Id }, _screeningsConverter.Convert(screening));
         }
 
         // DELETE: api/Screenings/5
@@ -106,7 +130,7 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }*/
+        }
 
         private IIncludableQueryable<Screening, Theater> GetScreeningsFromContext()
         {
