@@ -38,7 +38,7 @@ namespace Cinema.Api.Controllers
 
         // GET: api/Crews/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Crew>> GetCrew(int id)
+        public async Task<ActionResult<CrewDTO>> GetCrew(int id)
         {
             var crew = await _context.Crews.FindAsync(id);
 
@@ -47,20 +47,24 @@ namespace Cinema.Api.Controllers
                 return NotFound();
             }
 
-            return crew;
+            return _converter.Convert(crew);
         }
 
         // PUT: api/Crews/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCrew(int id, Crew crew)
+        public async Task<IActionResult> PutCrew(int id, CrewDTO crewDTO)
         {
-            if (id != crew.Id)
+            if (id != crewDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(crew).State = EntityState.Modified;
+            Crew crew = _converter.Convert(crewDTO);
+
+            //Make starredInDTO before this
+
+            _context.Entry(crewDTO).State = EntityState.Modified;
 
             try
             {
