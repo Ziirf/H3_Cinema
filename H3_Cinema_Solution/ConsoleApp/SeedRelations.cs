@@ -21,7 +21,7 @@ namespace ConsoleApp
         {
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
-            _context.AddRange(PopulateScreeningsNSeats());
+            _context.AddRange(PopulateScreenings(100, 20));
             _context.UpdateRange(PopulateCustomerPostcode());
             _context.UpdateRange(PopulateMovieAgeRating());
             _context.SaveChanges();
@@ -99,9 +99,12 @@ namespace ConsoleApp
 
         private DateTime RandomTime()
         {
-            var start = DateTime.Today;
-            DateTime result = start.AddDays(_random.Next(1, 30)).AddHours(_random.Next(8, 24)).AddMinutes(_random.Next(5, 55));
-            return result;
+            int[] numbArray = {0, 10, 15, 20, 30, 40, 45, 50};
+
+            return DateTime.Today
+                .AddDays(_random.Next(1, 30))
+                .AddHours(_random.Next(10, 22))
+                .AddMinutes(numbArray[_random.Next(numbArray.Length)]);
         }
 
         private List<Seat> GenerateSeatTheater(Theater theater)
@@ -121,18 +124,18 @@ namespace ConsoleApp
             return theaterSeats;
         }
 
-        private List<Screening> PopulateScreeningsNSeats()
+        private List<Screening> PopulateScreenings(int amountGenerated, int movieAmount = 100)
         {
             List<Screening> Screenings = _context.Screenings.ToList();
-            List<Movie> movies = _context.Movies.ToList();
+            List<Movie> movies = _context.Movies.Take(movieAmount).ToList();
             List<Theater> theaters = _context.Theaters.ToList();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < amountGenerated; i++)
             {
-                int theaterID = _random.Next(0, 4);
+                int theaterID = _random.Next(theaters.Count);
                 Screenings.Add(new Screening()
                 {
-                    Movie = movies[i],
+                    Movie = movies[_random.Next(movies.Count)],
                     Theater = theaters[theaterID],
                     Time = RandomTime(),
                     Seats = GenerateSeatTheater(theaters[theaterID])
@@ -142,20 +145,29 @@ namespace ConsoleApp
             return Screenings;
         }
 
-        private List<Booking> PopulateBookings()
+        private List<Booking> PopulateBookings(int amountBooked = 100)
         {
             List<Booking> bookings = _context.Bookings.ToList();
             List<Customer> customers = _context.Customers.ToList();
             List<Seat> seats = _context.Seats.ToList();
+            List<Seat> randomSeats = seats.OrderBy(x => _random.Next()).Take(amountBooked).ToList();
 
-            for (int i = 0; i < customers.Count(); i++)
+            foreach (var seat in randomSeats)
             {
                 bookings.Add(new Booking()
                 {
-                    Customer = customers[i],
-                    Seat = seats[i]
+                    Customer = customers[_random.Next(customers.Count())],
+                    Seat = seat
                 });
             }
+
+            //for (int i = 0; i < amountBooked; i++)
+            //{
+            //    bookings.Add(new Booking()
+            //    {
+            //        Customer = customers[i],
+            //    });
+            //}
 
             return bookings;
         }
