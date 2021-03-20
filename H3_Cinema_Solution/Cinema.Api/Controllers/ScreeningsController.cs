@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinema.Api.ExtentionMethods;
 
 namespace Cinema.Api.Controllers
 {
@@ -28,7 +29,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreenings()
         {
-            var screenings = await GetScreeningsFromContext().ToListAsync();
+            var screenings = await _context.Screenings.IncludeAll().ToListAsync();
 
             return screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
         }
@@ -37,7 +38,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ScreeningDTO>> GetScreening(int id)
         {
-            var screening = await GetScreeningsFromContext().FirstOrDefaultAsync(x => x.Id == id);
+            var screening = await _context.Screenings.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
             if (screening == null)
             {
@@ -51,7 +52,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("Movie/{id}")]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreeningByMovieId(int id)
         {
-            var screenings = await GetScreeningsFromContext().Where(x => x.Movie.Id == id).ToListAsync();
+            var screenings = await _context.Screenings.IncludeAll().Where(x => x.Movie.Id == id).ToListAsync();
 
             if (screenings == null)
             {
@@ -132,6 +133,7 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
+        /*
         private IIncludableQueryable<Screening, Theater> GetScreeningsFromContext()
         {
             // Get the entire model plus its relevant relations.
@@ -139,7 +141,7 @@ namespace Cinema.Api.Controllers
                 .Include(x => x.Movie)
                 .Include(x => x.Seats).ThenInclude(x => x.SeatLocation)
                 .Include(x => x.Theater);
-        }
+        }*/
 
         private bool ScreeningExists(int id)
         {

@@ -85,8 +85,8 @@ namespace Cinema.Api.Controllers
         }
 
 
-    // DELETE: api/Theaters/5
-    [HttpDelete("{id}")]
+        // DELETE: api/Theaters/5
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTheater(int id)
         {
             //Theater theater = _context.Theaters.Include(x => x.Id).Include(x => x.)
@@ -102,6 +102,7 @@ namespace Cinema.Api.Controllers
 
             _context.RemoveRange(screenings);
             _context.Theaters.Remove(theater);
+
             await _context.SaveChangesAsync();
 
             return NoContent();

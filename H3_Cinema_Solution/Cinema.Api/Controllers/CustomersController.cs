@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinema.Api.ExtentionMethods;
 
 namespace Cinema.Api.Controllers
 {
@@ -29,7 +30,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetCustomers()
         {
             // Gets the customers out of the database.
-            var customers = await GetCustomersFromContext().ToListAsync();
+            var customers = await _context.Customers.IncludeAll().ToListAsync();
 
             return customers.Select(x => _converter.Convert(x)).OrderBy(x => x.Id).ToList();
         }
@@ -39,7 +40,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
         {
             // Gets the first customer with the Id into a single.
-            Customer customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == id);
+            Customer customer = await _context.Customers.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
             if (customer == null)
             {
@@ -96,7 +97,7 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             // Get back the customer including its relation to return the customerDTO.
-            customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == customer.Id);
+            customer = await _context.Customers.IncludeAll().FirstOrDefaultAsync(x => x.Id == customer.Id);
 
             return CreatedAtAction("GetCustomer", new { id = customer.Id }, _converter.Convert(customer));
         }
@@ -106,7 +107,7 @@ namespace Cinema.Api.Controllers
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             // Get the relevant customer.
-            Customer customer = await GetCustomersFromContext().FirstOrDefaultAsync(x => x.Id == id);
+            Customer customer = await _context.Customers.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
             if (customer == null)
             {
@@ -122,11 +123,12 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
+        /*
         private IIncludableQueryable<Customer, ICollection<Booking>> GetCustomersFromContext()
         {
             // Get the entire model plus its relevant relations.
             return _context.Customers.Include(x => x.Postcode).Include(x => x.Bookings);
-        }
+        }*/
 
         private bool CustomerExists(int id)
         {

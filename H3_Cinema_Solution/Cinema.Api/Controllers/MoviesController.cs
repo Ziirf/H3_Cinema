@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinema.Api.ExtentionMethods;
 
 namespace Cinema.Api.Controllers
 {
@@ -30,18 +31,14 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovies()
         {
             // Gets the movies out of the database.
-            var movies = GetMoviesFromContext();
-
-            return await movies.Select(movie => _converter.Convert(movie)).ToListAsync();
+            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).ToListAsync();
         }
 
         [HttpGet("Range/{start}-{end}")]
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRange(int start, int end)
         {
             // Gets the movies out of the database.
-            var movies = GetMoviesFromContext();
-
-            return await movies.Select(movie => _converter.Convert(movie)).Skip(start).Take(end - start).ToListAsync();
+            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(start - 1).Take(end - start + 1).ToListAsync();
         }
 
         // GET: api/Movies/Random
@@ -51,7 +48,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRandom(int amount = 20)
         {
             // Gets the movies out of the database and puts it into a list.
-            var movies = await GetMoviesFromContext().ToListAsync();
+            var movies = await _context.Movies.IncludeAll().ToListAsync();
 
             // Picks out random movies and converts them into MovieDTO objects and returns them in a list.
             var rnd = new Random();
@@ -65,7 +62,7 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<MovieDTO>> GetMovie(int id)
         {
             // Gets the first movie with the Id into a single.
-            Movie movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == id);
+            Movie movie = await _context.Movies.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
             if (movie == null)
             {
@@ -123,7 +120,7 @@ namespace Cinema.Api.Controllers
             await _context.SaveChangesAsync();
 
             // Get back the movie including its relation to return the movieDTO.
-            movie = await GetMoviesFromContext().FirstOrDefaultAsync(x => x.Id == movie.Id);
+            movie = await _context.Movies.IncludeAll().FirstOrDefaultAsync(x => x.Id == movie.Id);
             movieDTO = _converter.Convert(movie);
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movieDTO);
@@ -134,7 +131,7 @@ namespace Cinema.Api.Controllers
         public async Task<IActionResult> DeleteMovie(int id)
         {
             // Get the relevant movie.
-            Movie movie = GetMoviesFromContext().FirstOrDefault(x => x.Id == id);
+            Movie movie = _context.Movies.IncludeAll().FirstOrDefault(x => x.Id == id);
 
             if (movie == null)
             {
@@ -155,15 +152,16 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
+        /*
         private IIncludableQueryable<Movie, Crew> GetMoviesFromContext()
         {
             // Get the entire model plus its relevant relations.
-            return _context.Movies
-                .Include(x => x.AgeRating)?
-                .Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Role)
-                .Include(x => x.MovieCrews).ThenInclude(x => x.Crew);
-        }
+            return _context.Movies.IncludeAll();
+            //.Include(x => x.AgeRating)?
+            //.Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
+            //.Include(x => x.MovieCrews).ThenInclude(x => x.Role)
+            //.Include(x => x.MovieCrews).ThenInclude(x => x.Crew);
+        }*/
 
         private bool MovieExists(int id)
         {
