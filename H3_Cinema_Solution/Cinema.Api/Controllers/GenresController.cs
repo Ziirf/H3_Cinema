@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinema.Converter;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Cinema.Data;
+using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
 
 namespace Cinema.Api.Controllers
@@ -15,17 +17,21 @@ namespace Cinema.Api.Controllers
     public class GenresController : ControllerBase
     {
         private readonly CinemaContext _context;
+        private readonly GenreConverter _converter;
 
         public GenresController(CinemaContext context)
         {
             _context = context;
+            _converter = new GenreConverter(_context);
         }
 
         // GET: api/Genres
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
+        public async Task<ActionResult<IEnumerable<GenreDTO>>> GetGenres()
         {
-            return await _context.Genres.ToListAsync();
+            var genre = await _context.Genres.ToListAsync();
+
+            return genre.Select(x => _converter.Convert(x)).ToList();
         }
 
         [HttpGet("list")]
@@ -36,7 +42,7 @@ namespace Cinema.Api.Controllers
 
         // GET: api/Genres/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Genre>> GetGenre(int id)
+        public async Task<ActionResult<GenreDTO>> GetGenre(int id)
         {
             var genre = await _context.Genres.FindAsync(id);
 
@@ -45,7 +51,7 @@ namespace Cinema.Api.Controllers
                 return NotFound();
             }
 
-            return genre;
+            return _converter.Convert(genre);
         }
 
         // PUT: api/Genres/5
@@ -56,6 +62,11 @@ namespace Cinema.Api.Controllers
             if (id != genre.Id)
             {
                 return BadRequest();
+            }
+
+            if (_context.Genres.FirstOrDefault(x => x.Name == genre.Name) != null)
+            {
+                return Problem(title: "This genre name already exists");
             }
 
             _context.Entry(genre).State = EntityState.Modified;
@@ -82,12 +93,18 @@ namespace Cinema.Api.Controllers
         // POST: api/Genres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Genre>> PostGenre(Genre genre)
+        public async Task<ActionResult<GenreDTO>> PostGenre(GenreDTO genreDTO)
         {
+            if (_context.Genres.FirstOrDefault(x => x.Name == genreDTO.Name) != null)
+            {
+                return Problem(title: "This genre name already exists");
+            }
+
+            var genre = _converter.Convert(genreDTO);
             _context.Genres.Add(genre);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGenre", new { id = genre.Id }, genre);
+            return CreatedAtAction("GetGenre", new { id = genre.Id }, _converter.Convert(genre));
         }
 
         // DELETE: api/Genres/5
