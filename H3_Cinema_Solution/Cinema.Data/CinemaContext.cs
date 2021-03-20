@@ -32,7 +32,7 @@ namespace Cinema.Data
             optionsBuilder
                 .UseLoggerFactory(ConsoleLoggerFactory)
                 .EnableSensitiveDataLogging()
-                .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema");
+                .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema; MultipleActiveResultSets=false;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

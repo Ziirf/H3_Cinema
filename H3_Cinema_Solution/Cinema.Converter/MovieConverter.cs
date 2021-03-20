@@ -26,7 +26,7 @@ namespace Cinema.Converters
                 AgeRating = movie.AgeRating?.RatingName,
                 ImgUrl = movie.ImgUrl,
                 ReleaseDate = movie.ReleaseDate,
-                Genre = movie.MovieGenres.Select(x => x.Genre.Name).ToList(),
+                Genre = movie.MovieGenres?.Select(x => x.Genre.Name).ToList(),
                 Directors = movie.MovieCrews.Where(item => item.Role.Title == "Director").Select(item => item.Crew).ToList(),
                 ScreenWriters = movie.MovieCrews.Where(item => item.Role.Title == "Screen Writer").Select(item => item.Crew).ToList(),
                 ScriptWriters = movie.MovieCrews.Where(item => item.Role.Title == "Script Writer").Select(item => item.Crew).ToList(),
