@@ -48,23 +48,47 @@ namespace ConsoleApp
             return movieGenres;
         }
 
+        //private List<MovieCrew> PopulateMovieCrewOld()
+        //{
+        //    List<MovieCrew> movieCrews = _context.MovieCrew.ToList();
+        //    List<Movie> movies = _context.Movies.ToList();
+        //    List<Crew> crew = _context.Crews.ToList();
+        //    List<Role> roles = _context.Roles.ToList();
+
+        //    foreach (var movie in movies)
+        //    {
+        //        List<Crew> randomCrews = crew.OrderBy(x => _random.Next()).Take(_random.Next(3, 10)).ToList();
+
+        //        foreach (var randomCrew in randomCrews)
+        //        {
+        //            Role randomRole = roles.OrderBy(x => _random.Next()).First();
+        //            movieCrews.Add(new MovieCrew() { Movie = movie, Crew = randomCrew, Role = randomRole });
+        //        }
+
+        //    }
+
+        //    return movieCrews;
+        //}
+
         private List<MovieCrew> PopulateMovieCrew()
         {
             List<MovieCrew> movieCrews = _context.MovieCrew.ToList();
             List<Movie> movies = _context.Movies.ToList();
-            List<Crew> crew = _context.Crews.ToList();
+            List<Crew> crews = _context.Crews.ToList();
             List<Role> roles = _context.Roles.ToList();
 
             foreach (var movie in movies)
             {
-                List<Crew> randomCrews = crew.OrderBy(x => _random.Next()).Take(_random.Next(3, 10)).ToList();
+                List<Crew> rngCrews = crews.OrderBy(x => _random.Next()).Take(_random.Next(5, 10)).ToList();
 
-                foreach (var randomCrew in randomCrews)
+                movieCrews.Add(new MovieCrew() { Movie = movie, Crew = rngCrews[0], Role = roles[0] });
+                movieCrews.Add(new MovieCrew() { Movie = movie, Crew = rngCrews[1], Role = roles[1] });
+                movieCrews.Add(new MovieCrew() { Movie = movie, Crew = rngCrews[2], Role = roles[2] });
+
+                foreach (var rngCrew in rngCrews.Skip(3))
                 {
-                    Role randomRole = roles.OrderBy(x => _random.Next()).First();
-                    movieCrews.Add(new MovieCrew() { Movie = movie, Crew = randomCrew, Role = randomRole });
+                    movieCrews.Add(new MovieCrew() { Movie = movie, Crew = rngCrew, Role = roles[3] });
                 }
-
             }
 
             return movieCrews;
@@ -97,16 +121,6 @@ namespace ConsoleApp
             return movies;
         }
 
-        private DateTime RandomTime()
-        {
-            int[] numbArray = {0, 10, 15, 20, 30, 40, 45, 50};
-
-            return DateTime.Today
-                .AddDays(_random.Next(1, 30))
-                .AddHours(_random.Next(10, 22))
-                .AddMinutes(numbArray[_random.Next(numbArray.Length)]);
-        }
-
         private List<Seat> GenerateSeatTheater(Theater theater)
         {
             var seatLocations = _context.SeatLocations.ToList();
@@ -137,12 +151,22 @@ namespace ConsoleApp
                 {
                     Movie = movies[_random.Next(movies.Count)],
                     Theater = theaters[theaterID],
-                    Time = RandomTime(),
+                    Time = RandomTime(14),
                     Seats = GenerateSeatTheater(theaters[theaterID])
                 });
             }
 
             return Screenings;
+        }
+
+        private DateTime RandomTime(int fromNow = 7)
+        {
+            int[] numbArray = {0, 10, 15, 20, 30, 40, 45, 50};
+
+            return DateTime.Today
+                .AddDays(_random.Next(1, fromNow))
+                .AddHours(_random.Next(10, 22))
+                .AddMinutes(numbArray[_random.Next(numbArray.Length)]);
         }
 
         private List<Booking> PopulateBookings(int amountBooked = 100)
