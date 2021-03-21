@@ -111,13 +111,7 @@ namespace Cinema.Api.Controllers
 
             return NoContent();
         }
-
-        //private IIncludableQueryable<Crew> GetCrewFromContext()
-        //{
-        //    // Get the entire model plus its relevant relations.
-        //    return _context.Crews.Include(x => x.Id).Include(x => )
-        //}
-
+        
         private bool CrewExists(int id)
         {
             return _context.Crews.Any(e => e.Id == id);

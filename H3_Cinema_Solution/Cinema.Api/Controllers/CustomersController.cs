@@ -123,13 +123,6 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
-        /*
-        private IIncludableQueryable<Customer, ICollection<Booking>> GetCustomersFromContext()
-        {
-            // Get the entire model plus its relevant relations.
-            return _context.Customers.Include(x => x.Postcode).Include(x => x.Bookings);
-        }*/
-
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.Id == id);

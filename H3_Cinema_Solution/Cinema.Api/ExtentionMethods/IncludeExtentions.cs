@@ -26,8 +26,9 @@ namespace Cinema.Api.ExtentionMethods
 
         public static IIncludableQueryable<Customer, ICollection<Booking>> IncludeAll(this DbSet<Customer> customers)
         {
-            // Get the entire model plus its relevant relations.
-            return customers.Include(x => x.Postcode).Include(x => x.Bookings);
+            return customers
+                .Include(x => x.Postcode)
+                .Include(x => x.Bookings);
         }
     }
 }

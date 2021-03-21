@@ -133,16 +133,6 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
-        /*
-        private IIncludableQueryable<Screening, Theater> GetScreeningsFromContext()
-        {
-            // Get the entire model plus its relevant relations.
-            return _context.Screenings
-                .Include(x => x.Movie)
-                .Include(x => x.Seats).ThenInclude(x => x.SeatLocation)
-                .Include(x => x.Theater);
-        }*/
-
         private bool ScreeningExists(int id)
         {
             return _context.Screenings.Any(e => e.Id == id);

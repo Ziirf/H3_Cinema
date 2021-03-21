@@ -34,11 +34,42 @@ namespace Cinema.Api.Controllers
             return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).ToListAsync();
         }
 
+        // Get: api/Movies/Range/1-20
         [HttpGet("Range/{start}-{end}")]
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRange(int start, int end)
         {
+            // Checks if the range is valid.
+            if (start <= 0 || end <= start)
+            {
+                return BadRequest();
+            }
+
             // Gets the movies out of the database.
             return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(start - 1).Take(end - start + 1).ToListAsync();
+        }
+
+        // Get: api/Movies/Page/1
+        [HttpGet("Page/{page}")]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesPage(int page)
+        {
+            // Checks if the page is valid.
+            if (page <= 0 )
+            {
+                return BadRequest();
+            }
+
+            // Gets the movies out of the database.
+            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(20 * (page -1)).Take(20).ToListAsync();
+        }
+
+        [HttpGet("Genre/{genre}")]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesByGenre(string genre)
+        {
+            // Gets all the movies that have a genre equal to the input.
+            var movies = await _context.Movies.IncludeAll().Where(x => x.MovieGenres.Any(y => y.Genre.Name.ToLower() == genre.ToLower())).ToListAsync();
+
+            // Converts them into DTO.
+            return movies.Select(movie => _converter.Convert(movie)).ToList();
         }
 
         // GET: api/Movies/Random
@@ -94,7 +125,7 @@ namespace Cinema.Api.Controllers
             _context.MovieCrew.AddRange(movie.MovieCrews);
             _context.MovieGenres.AddRange(movie.MovieGenres);
 
-            // Updating the entry
+            // marks the entry as modified
             _context.Entry(movie).State = EntityState.Modified;
 
             try
@@ -151,17 +182,6 @@ namespace Cinema.Api.Controllers
 
             return NoContent();
         }
-
-        /*
-        private IIncludableQueryable<Movie, Crew> GetMoviesFromContext()
-        {
-            // Get the entire model plus its relevant relations.
-            return _context.Movies.IncludeAll();
-            //.Include(x => x.AgeRating)?
-            //.Include(x => x.MovieGenres).ThenInclude(x => x.Genre)
-            //.Include(x => x.MovieCrews).ThenInclude(x => x.Role)
-            //.Include(x => x.MovieCrews).ThenInclude(x => x.Crew);
-        }*/
 
         private bool MovieExists(int id)
         {

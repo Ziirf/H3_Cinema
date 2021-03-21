@@ -2,16 +2,16 @@
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace Cinema.Converter
 {
     public class CrewConverter : IConverter<Crew, CrewDTO>
     {
         private readonly CinemaContext _context;
-        
+
         public CrewConverter(CinemaContext context)
         {
             _context = context;
@@ -21,7 +21,7 @@ namespace Cinema.Converter
         public CrewDTO Convert(Crew crew)
         {
             List<MovieCrew> moviecrew = new List<MovieCrew>();
- 
+
             moviecrew = _context.MovieCrew.Where(x => x.Crew.Id == crew.Id)
                 .Include(x => x.Role)
                 .Include(x => x.Movie)
@@ -59,7 +59,7 @@ namespace Cinema.Converter
                 ImgUrl = crew.ImgUrl,
                 Description = crew.Description,
                 Roles = roles,
-                StarredIn = movies.Select(x=>conver.Convert(x)).ToList() //Maybe make a StarredInDTO
+                StarredIn = movies.Select(x => conver.Convert(x)).ToList() //Maybe make a StarredInDTO
 
             };
 
