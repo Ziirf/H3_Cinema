@@ -104,6 +104,18 @@ namespace Cinema.Api.Controllers
             return _converter.Convert(movie);
         }
 
+        // GET: api/Airing
+        [HttpGet("Airing")]
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMovieCurrentlyAiring()
+        {
+            // Gets all the id's of movies with a screening.
+            var listMovieId = await _context.Screenings.Include(x => x.Movie).Select(x => x.Movie.Id).Distinct().ToListAsync();
+            // Gets all movies with above ids.
+            var movies = await _context.Movies.IncludeAll().Where(x => listMovieId.Contains(x.Id)).ToListAsync();
+
+            return movies.Select(movie => _converter.Convert(movie)).ToList();
+        }
+
         // PUT: api/Movies/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, MovieDTO movieDTO)
