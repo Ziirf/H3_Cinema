@@ -62,9 +62,8 @@ namespace Cinema.Api.Controllers
 
             Crew crew = _converter.Convert(crewDTO);
 
-            //Make starredInDTO before this
 
-            _context.Entry(crewDTO).State = EntityState.Modified;
+            _context.Entry(crew).State = EntityState.Modified;
 
             try
             {
@@ -88,8 +87,10 @@ namespace Cinema.Api.Controllers
         // POST: api/Crews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Crew>> PostCrew(Crew crew)
+        public async Task<ActionResult<CrewDTO>> PostCrew(CrewDTO crewDTO)
         {
+            Crew crew = _converter.Convert(crewDTO);
+
             _context.Crews.Add(crew);
             await _context.SaveChangesAsync();
 
@@ -100,23 +101,24 @@ namespace Cinema.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCrew(int id)
         {
+            List<MovieCrew> movieCrews = _context.MovieCrew.Where(x => x.CrewId == id).ToList();
+
             var crew = await _context.Crews.FindAsync(id);
             if (crew == null)
             {
                 return NotFound();
             }
-
+            
+            _context.RemoveRange(movieCrews);
             _context.Crews.Remove(crew);
+
+
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        //private IIncludableQueryable<Crew> GetCrewFromContext()
-        //{
-        //    // Get the entire model plus its relevant relations.
-        //    return _context.Crews.Include(x => x.Id).Include(x => )
-        //}
+        
 
         private bool CrewExists(int id)
         {
