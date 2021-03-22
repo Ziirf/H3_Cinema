@@ -16,6 +16,6 @@ namespace Cinema.Domain.DTOs
 
         public List<string> Roles { get; set; }
 
-        public IEnumerable<MovieDTO> StarredIn { get; set; }
+        public IEnumerable<StarredInDTO> StarredIn { get; set; }
     }
 }

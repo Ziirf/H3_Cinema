@@ -11,10 +11,12 @@ namespace Cinema.Converter
     public class CrewConverter : IConverter<Crew, CrewDTO>
     {
         private readonly CinemaContext _context;
-
+        private readonly StarredInConverter _converterStarred;
+        
         public CrewConverter(CinemaContext context)
         {
             _context = context;
+            _converterStarred = new StarredInConverter(context);
         }
 
 
@@ -26,9 +28,9 @@ namespace Cinema.Converter
                 .Include(x => x.Role)
                 .Include(x => x.Movie)
                 .ToList();
-            var movies = new List<Movie>();
             var roles = new List<string>();
 
+            var starredin = new List<StarredInDTO>();
 
             foreach (var role in moviecrew)
             {
@@ -40,9 +42,9 @@ namespace Cinema.Converter
 
             foreach (var movie in moviecrew)
             {
-                if (!movies.Contains(movie.Movie))
+                if (!starredin.Contains(_converterStarred.Convert(movie.Movie)))
                 {
-                    movies.Add(movie.Movie);
+                    starredin.Add(_converterStarred.Convert(movie.Movie));
                 }
 
             }
@@ -59,7 +61,7 @@ namespace Cinema.Converter
                 ImgUrl = crew.ImgUrl,
                 Description = crew.Description,
                 Roles = roles,
-                StarredIn = movies.Select(x => conver.Convert(x)).ToList() //Maybe make a StarredInDTO
+                StarredIn = starredin
 
             };
 
