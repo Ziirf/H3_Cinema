@@ -11,6 +11,7 @@ namespace Cinema.Domain.DTOs
         public DateTime Time { get; set; }
         public string Movie { get; set; }
         public string Theater { get; set; }
+        public string AgeRating { get; set; }
         public ICollection<SeatDTO> Seats { get; set; }
     }
 }

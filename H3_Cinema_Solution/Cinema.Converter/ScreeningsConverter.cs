@@ -24,6 +24,7 @@ namespace Cinema.Converter
                 Id = screening.Id,
                 Time = screening.Time,
                 Movie = screening.Movie.Title,
+                AgeRating = screening.Movie.AgeRating.RatingName,
                 Theater = screening.Theater.TheaterName,
                 Seats = screening.Seats.Select(seat => seatConverter.Convert(seat)).OrderBy(x => x.RowNumber).ThenBy(x => x.SeatNumber).ToList()
             };

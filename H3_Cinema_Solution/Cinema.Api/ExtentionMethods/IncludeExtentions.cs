@@ -19,7 +19,7 @@ namespace Cinema.Api.ExtentionMethods
         public static IIncludableQueryable<Screening, Theater> IncludeAll(this DbSet<Screening> screenings)
         {
             return screenings
-                    .Include(x => x.Movie)
+                    .Include(x => x.Movie).ThenInclude(x => x.AgeRating)
                     .Include(x => x.Seats).ThenInclude(x => x.SeatLocation)
                     .Include(x => x.Theater);
         }
