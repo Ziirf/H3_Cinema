@@ -23,6 +23,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
+            //Get Bookings from database with relation tables.
             var movies = _context.Bookings
                 .Include(x => x.Customer)
                 .Include(x => x.Seat).ThenInclude(x => x.Screening).ThenInclude(x => x.Theater)
@@ -46,6 +47,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
+
             var booking = await _context.Bookings.FindAsync(id);
 
             if (booking == null)

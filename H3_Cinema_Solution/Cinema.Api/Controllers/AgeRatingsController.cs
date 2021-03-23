@@ -25,6 +25,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AgeRating>>> GetAgeRatings()
         {
+            // Gets all ageratings from database.
             return await _context.AgeRatings.ToListAsync();
         }
 
@@ -32,6 +33,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AgeRating>> GetAgeRating(int id)
         {
+            // Get specific agerating from database from database by ID
             var ageRating = await _context.AgeRatings.FindAsync(id);
 
             if (ageRating == null)
