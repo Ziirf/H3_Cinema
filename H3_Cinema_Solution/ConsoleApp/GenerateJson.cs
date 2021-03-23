@@ -1,9 +1,14 @@
-﻿using Cinema.Data;
+﻿using System;
+using Cinema.Data;
 using Cinema.Domain.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
@@ -23,6 +28,46 @@ namespace ConsoleApp
             ConvertToJsonFile(GenerateSeatLocation(20, 30), "SeatLocation");
 
         }
+
+        private async static Task<RootObject> GetMovies(string movieNavn)
+        {
+            var http = new HttpClient();
+            var url = String.Format("http://api.openweathermap.org/data/2.5/weather?lat={0}&amp;amp;lon={1}&amp;amp;units=metric", lat, lon);
+            var response = await http.GetAsync(url);
+            var result = await response.Content.ReadAsStringAsync();
+            var serializer = new DataContractJsonSerializer(typeof(RootObject));
+
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(result));
+            var data = (RootObject)serializer.ReadObject(ms);
+
+            return data;
+        }
+
+
+        private List<Movie> MakeMoviesFromAPI(List<Movie> jsonMovies)
+        {
+            var movies = new List<Movie>();
+
+
+
+
+            return movies;
+        }
+
+        private List<T> ReadJsonToList<T>(string file)
+        {
+            var outputList = new List<T>();
+
+            //using (StreamReader r = new StreamReader($"../../../data/{ file }.json"))
+            using (StreamReader r = new StreamReader($"data/{ file }.json"))
+            {
+                string json = r.ReadToEnd();
+                outputList = JsonConvert.DeserializeObject<List<T>>(json);
+            }
+
+            return outputList;
+        }
+
 
         private static bool ConvertToJsonFile<T>(List<T> list, string fileName)
         {
