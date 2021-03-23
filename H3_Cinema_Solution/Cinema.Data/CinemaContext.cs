@@ -6,6 +6,7 @@ namespace Cinema.Data
 {
     public class CinemaContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<AgeRating> AgeRatings { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Customer> Customers { get; set; }
