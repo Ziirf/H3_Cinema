@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cinema.Api.ExtentionMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
@@ -39,9 +40,15 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
+
             // Gets the first customer with the Id into a single.
             Customer customer = await _context.Customers.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
-
+            
             if (customer == null)
             {
                 return NotFound();
