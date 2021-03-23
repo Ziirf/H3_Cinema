@@ -30,6 +30,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CrewDTO>>> GetCrews()
         {
+            // Get crews from Database and convert to crewDTO
             var crews = await _context.Crews.ToListAsync();
 
             return crews.Select(crew => _converter.Convert(crew)).ToList();
@@ -40,6 +41,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CrewDTO>> GetCrew(int id)
         {
+            // Get specific Crew and convert to crewDTO
             var crew = await _context.Crews.FindAsync(id);
 
             if (crew == null)
@@ -50,11 +52,19 @@ namespace Cinema.Api.Controllers
             return _converter.Convert(crew);
         }
 
+        /// <summary>
+        /// Updates Crew via CrewDTO.
+        /// DOES NOT UPDATE STARREDIN OR ROLES, MUST BE DONES VIA MOVIES
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="crewDTO"></param>
+        /// <returns></returns>
         // PUT: api/Crews/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCrew(int id, CrewDTO crewDTO)
         {
+            //Update specific Crew, does not update starredINDTO. 
             if (id != crewDTO.Id)
             {
                 return BadRequest();
@@ -84,6 +94,13 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Post a new Crew.
+        /// STARREDIN AND ROLES WILL NOT BE POSTED,
+        /// MUST BE DONE VIA MOVIES
+        /// </summary>
+        /// <param name="crewDTO"></param>
+        /// <returns></returns>
         // POST: api/Crews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -97,10 +114,12 @@ namespace Cinema.Api.Controllers
             return CreatedAtAction("GetCrew", new { id = crew.Id }, crew);
         }
 
+
         // DELETE: api/Crews/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCrew(int id)
         {
+            // Deletes specific crew and its relations to moviescrew
             List<MovieCrew> movieCrews = _context.MovieCrew.Where(x => x.CrewId == id).ToList();
 
             var crew = await _context.Crews.FindAsync(id);
@@ -109,6 +128,7 @@ namespace Cinema.Api.Controllers
                 return NotFound();
             }
             
+            //Remove relation to moviecrews and removes the crew
             _context.RemoveRange(movieCrews);
             _context.Crews.Remove(crew);
 

@@ -17,6 +17,8 @@ namespace ConsoleApp
 
         public void GenerateJsonFiles()
         {
+            //Generate Json files for Database
+
             ConvertToJsonFile(GenerateTheater(), "Theaters");
             ConvertToJsonFile(GenerateSeatLocation(20, 30), "SeatLocation");
 

@@ -17,6 +17,7 @@ namespace Cinema.Converter
 
         public ScreeningDTO Convert(Screening screening)
         {
+            // Convert Screening to DTO
             var seatConverter = new SeatsConverter(_context);
 
             return new ScreeningDTO
@@ -32,6 +33,9 @@ namespace Cinema.Converter
 
         public Screening Convert(ScreeningDTO screeningDTO)
         {
+            // Convert DTO to Screening
+
+            // Get Movie and Theater, that corresponds to the Screening
             Movie movie = _context.Movies.FirstOrDefault(x => x.Title == screeningDTO.Movie);
             Theater theater = _context.Theaters.FirstOrDefault(x => x.TheaterName == screeningDTO.Theater);
             Screening screening = new Screening
@@ -42,6 +46,7 @@ namespace Cinema.Converter
                 Time = screeningDTO.Time
             };
 
+            // Get all seats that the Theater contains and add them to Seats for the Screening
             screening.Seats = new List<Seat>();
             var seatLocations = _context.SeatLocations
                 .Where(x => x.Row <= screening.Theater.Row && x.SeatNumber <= screening.Theater.SeatNumber)

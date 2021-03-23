@@ -19,6 +19,7 @@ namespace Cinema.Converter
 
         public GenreDTO Convert(Genre genre)
         {
+            // Convert to DTO from genre
             return new GenreDTO
             {
                 Id = genre.Id,
@@ -28,6 +29,7 @@ namespace Cinema.Converter
 
         public Genre Convert(GenreDTO genreDTO)
         {
+            //Convert to Genre and add MovieGenres
             return new Genre
             {
                 Id = genreDTO.Id,

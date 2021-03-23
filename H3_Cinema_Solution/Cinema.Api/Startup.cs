@@ -26,6 +26,7 @@ namespace Cinema.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Cors Policy, in prod specify to specific IP
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -42,6 +43,8 @@ namespace Cinema.Api
 
             services.AddControllers();
 
+
+            //Add JWT/Authenticantion 
             var jwtSection = Configuration.GetSection("JWTSettings");
             services.Configure<JWTSettings>(jwtSection);
 
@@ -66,6 +69,7 @@ namespace Cinema.Api
                 };
             });
 
+            // Add Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cinema.Api", Version = "v1" });
@@ -75,7 +79,10 @@ namespace Cinema.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //CorsPolicy
             app.UseCors("CorsPolicy");
+
+            //Add Swagger if development
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

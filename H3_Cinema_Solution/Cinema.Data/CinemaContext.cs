@@ -6,6 +6,9 @@ namespace Cinema.Data
 {
     public class CinemaContext : DbContext
     {
+        // Database Class
+
+        // Tables
         public DbSet<User> Users { get; set; }
         public DbSet<AgeRating> AgeRatings { get; set; }
         public DbSet<Booking> Bookings { get; set; }
@@ -38,8 +41,13 @@ namespace Cinema.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Add Contrains to the Database
+
+            // Primary Keys
             modelBuilder.Entity<MovieGenre>().HasKey(x => new { x.MovieId, x.GenreId });
             modelBuilder.Entity<MovieCrew>().HasKey(x => new { x.MovieId, x.RoleId, x.CrewId });
+
+            // Set Unique on specified colum/colums
             modelBuilder.Entity<Seat>().HasIndex(x => new { x.SeatLocationId, x.ScreeningId }).IsUnique();
             modelBuilder.Entity<Booking>().HasIndex(x => new { x.SeatId }).IsUnique();
             modelBuilder.Entity<Postcode>().HasIndex(x => new { x.Code }).IsUnique();

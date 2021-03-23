@@ -19,6 +19,7 @@ namespace ConsoleApp
 
         public void PopulateDatabaseRelation()
         {
+            // Populates all tables with relations and data
             _context.AddRange(PopulateMovieGenre());
             _context.AddRange(PopulateMovieCrew());
             _context.AddRange(PopulateScreenings(100, 20));
@@ -36,6 +37,7 @@ namespace ConsoleApp
             List<Movie> movies = _context.Movies.ToList();
             List<Genre> genres = _context.Genres.ToList();
 
+            // Add random Genres to movies
             foreach (var movie in movies)
             {
                 List<Genre> randomGenres = genres.OrderBy(x => _random.Next()).Take(_random.Next(1, 4)).ToList();
@@ -77,6 +79,7 @@ namespace ConsoleApp
             List<Crew> crews = _context.Crews.ToList();
             List<Role> roles = _context.Roles.ToList();
 
+            // Add random movies roles to movies crew
             foreach (var movie in movies)
             {
                 List<Crew> rngCrews = crews.OrderBy(x => _random.Next()).Take(_random.Next(5, 10)).ToList();
@@ -99,7 +102,8 @@ namespace ConsoleApp
             List<Customer> customers = _context.Customers.ToList();
             List<Postcode> postcodes = _context.Postcodes.ToList();
             var rnd = new Random();
-
+            
+            // Add random postcodes to customers
             foreach (var customer in customers)
             {
                 customer.Postcode = postcodes.OrderBy(x => rnd.Next()).FirstOrDefault();
@@ -113,6 +117,7 @@ namespace ConsoleApp
             List<Movie> movies = _context.Movies.ToList();
             List<AgeRating> ageRatings = _context.AgeRatings.ToList();
 
+            // Add random Agerating to Movies
             foreach (var movie in movies)
             {
                 movie.AgeRating = ageRatings.OrderBy(x => _random.Next()).FirstOrDefault();
@@ -127,9 +132,11 @@ namespace ConsoleApp
             var theaterSeats = new List<Seat>();
             int numberOfSeats = theater.Row * theater.SeatNumber;
 
+            // Get list of seats for a specific theater
             seatLocations = seatLocations.Where(x => x.Row <= theater.Row && x.SeatNumber <= theater.SeatNumber)
                 .OrderBy(x => x.Row).ThenBy(x => x.SeatNumber).ToList();
 
+            // Add seats to a theater
             for (int i = 0; i < numberOfSeats; i++)
             {
                 theaterSeats.Add(new Seat() { SeatLocation = seatLocations[i] });
@@ -144,6 +151,7 @@ namespace ConsoleApp
             List<Movie> movies = _context.Movies.Take(movieAmount).ToList();
             List<Theater> theaters = _context.Theaters.ToList();
 
+            //Generate Screenings on random Theaters from random Movies
             for (int i = 0; i < amountGenerated; i++)
             {
                 int theaterID = _random.Next(theaters.Count);
@@ -161,6 +169,7 @@ namespace ConsoleApp
 
         private DateTime RandomTime(int fromNow = 7)
         {
+            //Generate RandomTime for Screening
             int[] numbArray = {0, 10, 15, 20, 30, 40, 45, 50};
 
             return DateTime.Today
@@ -171,6 +180,8 @@ namespace ConsoleApp
 
         private List<Booking> PopulateBookings(int amountBooked = 100)
         {
+            //Generate Bookings with random Customers with random Seats
+
             List<Booking> bookings = _context.Bookings.ToList();
             List<Customer> customers = _context.Customers.ToList();
             List<Seat> seats = _context.Seats.ToList();

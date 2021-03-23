@@ -16,6 +16,7 @@ namespace Cinema.Converter
 
         public CustomerDTO Convert(Customer customer)
         {
+            // Create CustomerDTO
             var customerDTO = new CustomerDTO
             {
                 Id = customer.Id,
@@ -26,6 +27,7 @@ namespace Cinema.Converter
                 Email = customer.Email
             };
 
+            // Convert postcode to dto, if exist.
             if (customer.Postcode != null)
             {
                 customerDTO.Postcode = customer.Postcode.Code;
@@ -37,6 +39,7 @@ namespace Cinema.Converter
 
         public Customer Convert(CustomerDTO customerDTO)
         {
+            // Convert to Customer from DTO
             var customer = new Customer
             {
                 Id = customerDTO.Id,
@@ -48,6 +51,7 @@ namespace Cinema.Converter
             };
 
             Postcode postcode = _context.Postcodes.FirstOrDefault(x => x.Code == customerDTO.Postcode);
+            //Add postcode to customer if data exist.
             if (postcode != null)
             {
                 customer.PostcodeId = postcode.Id;

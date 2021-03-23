@@ -29,6 +29,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreenings()
         {
+            // Get Screeningsd and include relations from database. Convert to DTO
             var screenings = await _context.Screenings.IncludeAll().ToListAsync();
 
             return screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
@@ -38,6 +39,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ScreeningDTO>> GetScreening(int id)
         {
+            // Get specific Screening and include relations from database. Convert to DTO
             var screening = await _context.Screenings.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
             if (screening == null)
@@ -52,6 +54,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("Movie/{id}")]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreeningByMovieId(int id)
         {
+            // Get Screenings with specific movie and include relations from database. convert to DTO
             var screenings = await _context.Screenings.IncludeAll().Where(x => x.Movie.Id == id).ToListAsync();
 
             if (screenings == null)
@@ -67,7 +70,7 @@ namespace Cinema.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutScreening(int id, ScreeningDTO screeningDTO)
         {
-            //var asd = screeningDTO.Seats.Where(x => x.IsBooked == true).Count();
+            // Update Screening 
             var amountBooked = _context.Bookings.Where(x => x.Seat.ScreeningId == id).Count();
 
             if (id != screeningDTO.Id)
@@ -75,6 +78,7 @@ namespace Cinema.Api.Controllers
                 return BadRequest();
             }
 
+            // Check that that the screening does not have booked seats
             if (amountBooked > 0)
             {
                 return Problem("Can't edit a movie that got bookings");
@@ -109,6 +113,7 @@ namespace Cinema.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Screening>> PostScreening(ScreeningDTO screeningDTO)
         {
+            //Post a Screening
             Screening screening = _screeningsConverter.Convert(screeningDTO);
 
             _context.Screenings.Add(screening);
@@ -121,6 +126,7 @@ namespace Cinema.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScreening(int id)
         {
+            // Delete a specific Screening
             var screening = await _context.Screenings.FindAsync(id);
             if (screening == null)
             {

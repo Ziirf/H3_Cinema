@@ -16,7 +16,7 @@ namespace Cinema.Converters
 
         public MovieDTO Convert(Movie movie)
         {
-            // Converts a movie Into a into a movieDTO
+            // Converts a movie Into a into a movieDTO and add references
             return new MovieDTO()
             {
                 Id = movie.Id,
@@ -36,8 +36,9 @@ namespace Cinema.Converters
 
         public Movie Convert(MovieDTO movieDTO)
         {
-
+            // Convert to DTO
             var crews = new List<MovieCrew>();
+            //Add roles to the Movie, if they exist in the DTO
             if (movieDTO.Directors != null)
             {
                 crews.AddRange(movieDTO.Directors.Select(x => new MovieCrew
@@ -92,11 +93,13 @@ namespace Cinema.Converters
             };
 
             AgeRating ageRating = _context.AgeRatings.FirstOrDefault(x => x.RatingName == movieDTO.AgeRating);
+            // Add Agerating to the Movie, if exist in DTO
             if (ageRating != null)
             {
                 movie.AgeRatingId = ageRating.Id;
             }
 
+            // Add Genre to the Movie, if exist in DTO
             if (movieDTO.Genre != null)
             {
                 foreach (var genre in movieDTO.Genre)

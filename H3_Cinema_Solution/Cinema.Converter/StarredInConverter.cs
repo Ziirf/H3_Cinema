@@ -21,6 +21,7 @@ namespace Cinema.Converter
 
         public StarredInDTO Convert(Movie movie)
         {
+            // Connvert Movie to StarredInDTO
             return new StarredInDTO()
             {
                 MovieId = movie.Id,
@@ -31,6 +32,7 @@ namespace Cinema.Converter
 
         public Movie Convert(StarredInDTO starredInDto)
         {
+            // Return Movie corresponding to StarredIn
             return _context.Movies.FirstOrDefault(x => x.Id == starredInDto.MovieId);
         }
     }

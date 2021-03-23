@@ -22,8 +22,10 @@ namespace Cinema.Converter
 
         public CrewDTO Convert(Crew crew)
         {
+            // Convert Crew to CrewDTO
             List<MovieCrew> moviecrew = new List<MovieCrew>();
 
+            // Include references
             moviecrew = _context.MovieCrew.Where(x => x.Crew.Id == crew.Id)
                 .Include(x => x.Role)
                 .Include(x => x.Movie)
@@ -32,6 +34,7 @@ namespace Cinema.Converter
 
             var starredin = new List<StarredInDTO>();
 
+            // Find all roles the crew has and add them to unique roles list
             foreach (var role in moviecrew)
             {
                 if (!roles.Contains(role.Role.Title))
@@ -40,6 +43,7 @@ namespace Cinema.Converter
                 }
             }
 
+            // Add all movies that the crew has been in, Add StarredInDTO instead of movie object.
             foreach (var movie in moviecrew)
             {
                 if (!starredin.Contains(_converterStarred.Convert(movie.Movie)))
@@ -49,6 +53,7 @@ namespace Cinema.Converter
 
             }
 
+            // Convert to DTO
             var conver = new MovieConverter(_context);
 
             var crewDTO = new CrewDTO
@@ -70,6 +75,8 @@ namespace Cinema.Converter
 
         public Crew Convert(CrewDTO crewDTO)
         {
+            // Convert to Crew from CrewDTO
+            // Roles and StarredIn data will be dropped.
             var crew = new Crew
             {
                 Id = crewDTO.Id,

@@ -25,6 +25,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Theater>>> GetTheaters()
         {
+            // Get Theaters from database
             return await _context.Theaters.ToListAsync();
         }
 
@@ -32,6 +33,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Theater>> GetTheater(int id)
         {
+            // Get specific Theater by id from database
             var theater = await _context.Theaters.FindAsync(id);
 
             if (theater == null)
@@ -47,6 +49,7 @@ namespace Cinema.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTheater(int id, Theater theater)
         {
+            // Update Theater
             if (id != theater.Id)
             {
                 return BadRequest();
@@ -78,6 +81,7 @@ namespace Cinema.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Theater>> PostTheater(Theater theater)
         {
+            // Post theater
             _context.Theaters.Add(theater);
             await _context.SaveChangesAsync();
 
@@ -89,7 +93,7 @@ namespace Cinema.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTheater(int id)
         {
-            //Theater theater = _context.Theaters.Include(x => x.Id).Include(x => x.)
+            // Delete theater and remove Screenings that contain the theater
             List<Screening> screenings = await _context.Screenings.Include(x => x.Theater)
                 .Where(x => x.Theater.Id == id).ToListAsync();
             

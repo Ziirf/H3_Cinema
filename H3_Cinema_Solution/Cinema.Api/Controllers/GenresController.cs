@@ -29,6 +29,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GenreDTO>>> GetGenres()
         {
+            // Get all genres and convert them to GenreDTO
             var genre = await _context.Genres.ToListAsync();
 
             return genre.Select(x => _converter.Convert(x)).ToList();
@@ -37,6 +38,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<string>>> GetGenresList()
         {
+            // Gets all genres and returns a list of strings
             return await _context.Genres.Select(x => x.Name).ToListAsync();
         }
 
@@ -44,6 +46,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<GenreDTO>> GetGenre(int id)
         {
+            // Get a specific genre and convert to GenreDTO
             var genre = await _context.Genres.FindAsync(id);
 
             if (genre == null)
@@ -59,11 +62,13 @@ namespace Cinema.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGenre(int id, Genre genre)
         {
+            // Update a genre
             if (id != genre.Id)
             {
                 return BadRequest();
             }
 
+            // Check if genre already exist.
             if (_context.Genres.FirstOrDefault(x => x.Name == genre.Name) != null)
             {
                 return Problem(title: "This genre name already exists");
@@ -95,11 +100,15 @@ namespace Cinema.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<GenreDTO>> PostGenre(GenreDTO genreDTO)
         {
+            // Post a Genre
+
+            // Check that the genre does not already exist
             if (_context.Genres.FirstOrDefault(x => x.Name == genreDTO.Name) != null)
             {
                 return Problem(title: "This genre name already exists");
             }
 
+            // Convert from GenreDTO to Genre and save
             var genre = _converter.Convert(genreDTO);
             _context.Genres.Add(genre);
             await _context.SaveChangesAsync();
@@ -111,6 +120,7 @@ namespace Cinema.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGenre(int id)
         {
+            // Delete specific Genre by ID
             var genre = await _context.Genres.FindAsync(id);
             if (genre == null)
             {

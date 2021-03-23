@@ -25,6 +25,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Postcode>>> GetPostcodes()
         {
+            // Get all postcodes from database
             return await _context.Postcodes.ToListAsync();
         }
 
@@ -32,6 +33,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Postcode>> GetPostcode(int id)
         {
+            // Get specific postcode from database by ID
             var postcode = await _context.Postcodes.FindAsync(id);
 
             if (postcode == null)

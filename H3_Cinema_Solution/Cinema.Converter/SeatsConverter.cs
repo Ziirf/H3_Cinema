@@ -20,6 +20,8 @@ namespace Cinema.Converter
 
         public SeatDTO Convert(Seat seat)
         {
+            // Convert Seats to DTO
+
             var booking = _context.Bookings
                 .Include(x => x.Customer).ThenInclude(x => x.Postcode)
                 .FirstOrDefault(x => x.SeatId == seat.Id);
