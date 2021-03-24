@@ -33,30 +33,30 @@ namespace Cinema.Api.Controllers
         }
 
 
-        //[HttpGet("Login")]
-        //public async Task<ActionResult<UserDTO>> Login([FromBody] User user)
-        //{
-        //    user = await _context.Users.Include(x => x.Customer)
-        //        .Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefaultAsync();
+        [HttpPost("Login")]
+        public async Task<ActionResult<UserDTO>> Login([FromBody] User user)
+        {
+            user = await _context.Users.Include(x => x.Customer)
+                .Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefaultAsync();
 
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
-        //    var token = GenerateAccessToken(user);
+            var token = GenerateAccessToken(user);
 
-        //    var userDTO = new UserDTO()
-        //    {
-        //        Id = user.Id,
-        //        Username = user.Username,
-        //        Rights = user.Rights,
-        //        CustomerId = user.Customer.Id,
-        //        Token = token
-        //    };
+            var userDTO = new UserDTO()
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Rights = user.Rights,
+                CustomerId = user.Customer.Id,
+                Token = token
+            };
 
-        //    return userDTO;
-        //}
+            return userDTO;
+        }
 
         [HttpGet("Login")]
         public async Task<ActionResult<UserDTO>> Login(string username, string password)
