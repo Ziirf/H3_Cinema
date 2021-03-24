@@ -61,7 +61,7 @@ namespace Cinema.Api.Controllers
         [HttpGet("Login")]
         public async Task<ActionResult<UserDTO>> Login(string username, string password)
         {
-            User user = (User)_context.Users.Where(x => x.Username == username);
+            User user = _context.Users.FirstOrDefault(x => x.Username == username);
 
             user = await _context.Users.Include(x => x.Customer)
                 .Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefaultAsync();
