@@ -33,9 +33,36 @@ namespace Cinema.Api.Controllers
         }
 
 
+        //[HttpGet("Login")]
+        //public async Task<ActionResult<UserDTO>> Login([FromBody] User user)
+        //{
+        //    user = await _context.Users.Include(x => x.Customer)
+        //        .Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefaultAsync();
+
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var token = GenerateAccessToken(user);
+
+        //    var userDTO = new UserDTO()
+        //    {
+        //        Id = user.Id,
+        //        Username = user.Username,
+        //        Rights = user.Rights,
+        //        CustomerId = user.Customer.Id,
+        //        Token = token
+        //    };
+
+        //    return userDTO;
+        //}
+
         [HttpGet("Login")]
-        public async Task<ActionResult<UserDTO>> Login([FromBody] User user)
+        public async Task<ActionResult<UserDTO>> Login(string username, string password)
         {
+            User user = (User)_context.Users.Where(x => x.Username == username);
+
             user = await _context.Users.Include(x => x.Customer)
                 .Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefaultAsync();
 
