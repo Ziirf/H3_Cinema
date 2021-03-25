@@ -26,17 +26,20 @@ namespace Cinema.Data
         // Many to many tables
         public DbSet<MovieCrew> MovieCrew { get; set; }
         public DbSet<MovieGenre> MovieGenres { get; set; }
+        public CinemaContext()
+        { }
 
-        //public CinemaContext(DbContextOptions<CinemaContext> options)
-        //    : base(options)
-        //{ }
+        public CinemaContext(DbContextOptions<CinemaContext> options)
+            : base(options)
+        { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseLoggerFactory(ConsoleLoggerFactory)
-                .EnableSensitiveDataLogging()
-                .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema; MultipleActiveResultSets=false;");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                    .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

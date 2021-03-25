@@ -1,4 +1,5 @@
 ﻿using Cinema.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleApp
 {
@@ -9,7 +10,13 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             // Creates a new instance of the context
-            _context = new CinemaContext();
+            var builder = new DbContextOptionsBuilder<CinemaContext>();
+            builder
+                .UseSqlServer(@"Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = H3Cinema")
+                .UseLoggerFactory(CinemaContext.ConsoleLoggerFactory)
+                .EnableSensitiveDataLogging();
+
+            _context = new CinemaContext(builder.Options);
 
             // Drops the database.
             _context.Database.EnsureDeleted();
