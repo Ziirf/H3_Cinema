@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cinema.Api.models
+namespace Cinema.Api.Models
 {
     public class JWTSettings
     {

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TestingDatabase
 {
-    public class DatabaseTests
+    public class CustomerTesting
     {
         private CinemaContext _context;
 
@@ -13,7 +13,7 @@ namespace TestingDatabase
         public void Setup()
         {
             var builder = new DbContextOptionsBuilder<CinemaContext>();
-            builder.UseInMemoryDatabase("CinemaMemoryDB"); 
+            builder.UseInMemoryDatabase("CinemaDBCustomerTesting"); 
             _context = new CinemaContext(builder.Options);
         }
 

@@ -14,8 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using Cinema.Domain.DTOs;
 using Cinema.Data;
-using Cinema.Api.models;
 using Cinema.Domain.Models;
+using Cinema.Api.Models;
 
 namespace Cinema.Api.Controllers
 {

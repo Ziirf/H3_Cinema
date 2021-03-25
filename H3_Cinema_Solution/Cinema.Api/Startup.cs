@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Cinema.Api.models;
+using Cinema.Api.Models;
 using Cinema.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
