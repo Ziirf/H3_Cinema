@@ -36,6 +36,8 @@ namespace Cinema.Api.Controllers
             return customers.Select(x => _converter.Convert(x)).OrderBy(x => x.Id).ToList();
         }
 
+        //[Authorize(Roles = "Admin")]
+        [Authorize]
         // GET: api/Customers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
