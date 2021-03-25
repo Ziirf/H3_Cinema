@@ -64,7 +64,7 @@ namespace Cinema.Api.Controllers
             User user = _context.Users.FirstOrDefault(x => x.Username == username);
 
             user = await _context.Users.Include(x => x.Customer)
-                .Where(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
+                .Where(x => x.Username == user.Username && x.Password == user.Password).FirstOrDefaultAsync();
 
             if (user == null)
             {
