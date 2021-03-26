@@ -1,13 +1,13 @@
-﻿using Cinema.Data;
+﻿using Cinema.Converter;
+using Cinema.Data;
+using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinema.Converter;
-using Cinema.Domain.DTOs;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
@@ -67,7 +67,7 @@ namespace Cinema.Api.Controllers
             {
                 return BadRequest();
             }
-            
+
             // Convert into Booking from BookingDTO
             Booking booking = _converter.Convert(bookingDTO);
 

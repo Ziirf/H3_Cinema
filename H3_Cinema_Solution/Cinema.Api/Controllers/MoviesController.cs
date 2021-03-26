@@ -1,16 +1,15 @@
-﻿using Cinema.Converters;
+﻿using Cinema.Api.ExtentionMethods;
+using Cinema.Converters;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinema.Api.ExtentionMethods;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
@@ -55,13 +54,13 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesPage(int page)
         {
             // Checks if the page is valid.
-            if (page <= 0 )
+            if (page <= 0)
             {
                 return BadRequest();
             }
 
             // Gets the movies out of the database.
-            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(20 * (page -1)).Take(20).ToListAsync();
+            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(20 * (page - 1)).Take(20).ToListAsync();
         }
 
         [HttpGet("Genre/{genre}")]

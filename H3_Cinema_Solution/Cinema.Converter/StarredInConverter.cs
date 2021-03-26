@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Cinema.Converters;
+﻿using Cinema.Converters;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using System.Linq;
 
 namespace Cinema.Converter
 {

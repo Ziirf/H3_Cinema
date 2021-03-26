@@ -1,15 +1,14 @@
-﻿using Cinema.Converter;
+﻿using Cinema.Api.ExtentionMethods;
+using Cinema.Converter;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinema.Api.ExtentionMethods;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {

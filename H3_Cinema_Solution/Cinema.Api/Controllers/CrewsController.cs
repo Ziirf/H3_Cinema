@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Cinema.Converter;
+﻿using Cinema.Converter;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cinema.Api.Controllers
 {
@@ -131,7 +128,7 @@ namespace Cinema.Api.Controllers
             {
                 return NotFound();
             }
-            
+
             //Remove relation to moviecrews and removes the crew
             _context.RemoveRange(movieCrews);
             _context.Crews.Remove(crew);
@@ -142,7 +139,7 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
-        
+
 
         private bool CrewExists(int id)
         {

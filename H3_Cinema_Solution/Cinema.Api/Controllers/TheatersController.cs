@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Cinema.Data;
+using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Cinema.Data;
-using Cinema.Domain.Models;
 
 namespace Cinema.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class TheatersController : ControllerBase
@@ -96,7 +96,7 @@ namespace Cinema.Api.Controllers
             // Delete theater and remove Screenings that contain the theater
             List<Screening> screenings = await _context.Screenings.Include(x => x.Theater)
                 .Where(x => x.Theater.Id == id).ToListAsync();
-            
+
 
             var theater = await _context.Theaters.FindAsync(id);
             if (theater == null)
