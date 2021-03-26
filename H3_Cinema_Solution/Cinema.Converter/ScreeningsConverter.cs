@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Cinema.Converters;
+﻿using Cinema.Converters;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Cinema.Converter
 {

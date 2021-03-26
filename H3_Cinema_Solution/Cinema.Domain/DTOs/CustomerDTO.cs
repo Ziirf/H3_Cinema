@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Cinema.Domain.Models;
-
-namespace Cinema.Domain.DTOs
+﻿namespace Cinema.Domain.DTOs
 {
     public class CustomerDTO
     {

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Cinema.Data;
+using Cinema.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Cinema.Data;
-using Cinema.Domain.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cinema.Api.Controllers
 {

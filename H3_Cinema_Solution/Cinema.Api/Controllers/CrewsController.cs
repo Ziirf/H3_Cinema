@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Cinema.Converter;
+﻿using Cinema.Converter;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
-using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cinema.Api.Controllers
 {
@@ -61,6 +59,7 @@ namespace Cinema.Api.Controllers
         /// <returns></returns>
         // PUT: api/Crews/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCrew(int id, CrewDTO crewDTO)
         {
@@ -103,6 +102,7 @@ namespace Cinema.Api.Controllers
         /// <returns></returns>
         // POST: api/Crews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<CrewDTO>> PostCrew(CrewDTO crewDTO)
         {
@@ -116,6 +116,7 @@ namespace Cinema.Api.Controllers
 
 
         // DELETE: api/Crews/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCrew(int id)
         {
@@ -127,7 +128,7 @@ namespace Cinema.Api.Controllers
             {
                 return NotFound();
             }
-            
+
             //Remove relation to moviecrews and removes the crew
             _context.RemoveRange(movieCrews);
             _context.Crews.Remove(crew);
@@ -138,7 +139,7 @@ namespace Cinema.Api.Controllers
             return NoContent();
         }
 
-        
+
 
         private bool CrewExists(int id)
         {

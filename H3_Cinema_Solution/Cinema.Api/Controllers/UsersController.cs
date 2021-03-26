@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Cinema.Api.models;
+using Cinema.Data;
+using Cinema.Domain.DTOs;
+using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using System.Text;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using Cinema.Domain.DTOs;
@@ -31,6 +27,14 @@ namespace Cinema.Api.Controllers
             _context = context;
             _jwtsettings = jwtsettings.Value;
         }
+
+        [Authorize]
+        [HttpGet("TokenValidate")]
+        public async Task<ActionResult<bool>> ValidateToken()
+        {
+            return true;
+        }
+
 
 
         [HttpPost("Login")]
@@ -98,6 +102,7 @@ namespace Cinema.Api.Controllers
                     new Claim(ClaimTypes.Role, Convert.ToString(user.Rights))
                 }),
                 Expires = DateTime.UtcNow.AddDays(2),
+                //Expires = DateTime.UtcNow.AddMinutes(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };

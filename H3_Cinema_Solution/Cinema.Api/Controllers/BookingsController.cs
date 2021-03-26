@@ -1,5 +1,8 @@
-﻿using Cinema.Data;
+﻿using Cinema.Converter;
+using Cinema.Data;
+using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -8,45 +11,40 @@ using System.Threading.Tasks;
 
 namespace Cinema.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingsController : ControllerBase
     {
         private readonly CinemaContext _context;
+        private readonly BookingConverter _converter;
 
         public BookingsController(CinemaContext context)
         {
             _context = context;
+            _converter = new BookingConverter(_context);
         }
 
         // GET: api/Bookings
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+        public async Task<ActionResult<IEnumerable<BookingDTO>>> GetBookings()
         {
-            //Get Bookings from database with relation tables.
-            var movies = _context.Bookings
-                .Include(x => x.Customer)
-                .Include(x => x.Seat).ThenInclude(x => x.Screening).ThenInclude(x => x.Theater)
-                .Include(x => x.Seat).ThenInclude(x => x.SeatLocation)
-                .Select(x => new
-                {
-                    x.Id,
-                    MsId = x.Seat.ScreeningId,
-                    x.Customer,
-                    Theater = x.Seat.Screening.Theater.TheaterName,
-                    Time = x.Seat.Screening.Time,
-                    Seats = x.Seat.SeatLocation
-                })
-                //.Include(x => x.Seats).ThenInclude(x => x.SeatLocation)
-                .ToListAsync();
+            // Get all bookings and convert to BookingDTO
+            var bookings = await _context.Bookings.ToListAsync();
 
-            return Ok(await movies);
+            return bookings.Select(x => _converter.Convert(x)).ToList();
         }
 
         // GET: api/Bookings/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Booking>> GetBooking(int id)
+        public async Task<ActionResult<BookingDTO>> GetBooking(int id)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
 
             var booking = await _context.Bookings.FindAsync(id);
 
@@ -55,18 +53,23 @@ namespace Cinema.Api.Controllers
                 return NotFound();
             }
 
-            return booking;
+            return _converter.Convert(booking);
         }
 
+        [Authorize(Roles = "Admin")]
         // PUT: api/Bookings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBooking(int id, Booking booking)
+        public async Task<IActionResult> PutBooking(int id, BookingDTO bookingDTO)
         {
-            if (id != booking.Id)
+            // Update a Booking
+            if (id != bookingDTO.BookingId)
             {
                 return BadRequest();
             }
+
+            // Convert into Booking from BookingDTO
+            Booking booking = _converter.Convert(bookingDTO);
 
             _context.Entry(booking).State = EntityState.Modified;
 
@@ -92,8 +95,17 @@ namespace Cinema.Api.Controllers
         // POST: api/Bookings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Booking>> PostBooking(Booking booking)
+        public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != bookingDTO.CustomerId.ToString())
+            {
+                return BadRequest();
+            }
+
+            // Converts BookingDTO into Booking
+            Booking booking = _converter.Convert(bookingDTO);
+
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
@@ -104,6 +116,12 @@ namespace Cinema.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
+
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {

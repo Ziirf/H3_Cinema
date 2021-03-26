@@ -1,14 +1,15 @@
-﻿using Cinema.Converter;
+﻿using Cinema.Api.ExtentionMethods;
+using Cinema.Converter;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Cinema.Api.ExtentionMethods;
 
 namespace Cinema.Api.Controllers
 {
@@ -32,7 +33,18 @@ namespace Cinema.Api.Controllers
             // Get Screeningsd and include relations from database. Convert to DTO
             var screenings = await _context.Screenings.IncludeAll().ToListAsync();
 
-            return screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
+            var result = screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
+            
+            // If not admin remove Customer
+            if (!User.IsInRole("Admin"))
+            {
+                foreach (var item in result.SelectMany(screening => screening.Seats))
+                {
+                    item.Customer = null;
+                }
+            }
+
+            return result;
         }
 
         // GET: api/Screenings/5
@@ -42,29 +54,53 @@ namespace Cinema.Api.Controllers
             // Get specific Screening and include relations from database. Convert to DTO
             var screening = await _context.Screenings.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
+            var screeningDTO = _screeningsConverter.Convert(screening);
+            
+            // If not admin remove Customer
+            if (!User.IsInRole("Admin"))
+            {
+                foreach (var item in screeningDTO.Seats)
+                {
+                    item.Customer = null;
+                }
+            }
+
+
             if (screening == null)
             {
                 return NotFound();
             }
 
-            return _screeningsConverter.Convert(screening);
+            return screeningDTO;
         }
 
         // GET: api/Screenings/Movie/5
+
         [HttpGet("Movie/{id}")]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreeningByMovieId(int id)
         {
             // Get Screenings with specific movie and include relations from database. convert to DTO
             var screenings = await _context.Screenings.IncludeAll().Where(x => x.Movie.Id == id).ToListAsync();
+            var result = screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
+
+            // If not admin remove Customer
+            if (!User.IsInRole("Admin"))
+            {
+                foreach (var item in result.SelectMany(screening => screening.Seats))
+                {
+                    item.Customer = null;
+                }
+            }
 
             if (screenings == null)
             {
                 return NotFound();
             }
 
-            return screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
+            return result;
         }
 
+        [Authorize(Roles = "Admin")]
         // PUT: api/Screenings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -110,6 +146,7 @@ namespace Cinema.Api.Controllers
 
         // POST: api/Screenings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Screening>> PostScreening(ScreeningDTO screeningDTO)
         {
@@ -123,6 +160,7 @@ namespace Cinema.Api.Controllers
         }
 
         // DELETE: api/Screenings/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScreening(int id)
         {

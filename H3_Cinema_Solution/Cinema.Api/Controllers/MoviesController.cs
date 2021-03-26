@@ -1,15 +1,15 @@
-﻿using Cinema.Converters;
+﻿using Cinema.Api.ExtentionMethods;
+using Cinema.Converters;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinema.Api.ExtentionMethods;
 
 namespace Cinema.Api.Controllers
 {
@@ -34,6 +34,7 @@ namespace Cinema.Api.Controllers
             return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).ToListAsync();
         }
 
+
         // Get: api/Movies/Range/1-20
         [HttpGet("Range/{start}-{end}")]
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesRange(int start, int end)
@@ -53,13 +54,13 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<MovieDTO>>> GetMoviesPage(int page)
         {
             // Checks if the page is valid.
-            if (page <= 0 )
+            if (page <= 0)
             {
                 return BadRequest();
             }
 
             // Gets the movies out of the database.
-            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(20 * (page -1)).Take(20).ToListAsync();
+            return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).Skip(20 * (page - 1)).Take(20).ToListAsync();
         }
 
         [HttpGet("Genre/{genre}")]
@@ -117,6 +118,7 @@ namespace Cinema.Api.Controllers
         }
 
         // PUT: api/Movies/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, MovieDTO movieDTO)
         {
@@ -153,6 +155,7 @@ namespace Cinema.Api.Controllers
         }
 
         // POST: api/Movies
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<MovieDTO>> PostMovie(MovieDTO movieDTO)
         {
@@ -170,6 +173,7 @@ namespace Cinema.Api.Controllers
         }
 
         // DELETE: api/Movies/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
