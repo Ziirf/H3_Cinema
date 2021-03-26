@@ -27,6 +27,7 @@ namespace Cinema.Api.Controllers
         }
 
         // GET: api/Customers
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetCustomers()
         {
@@ -36,9 +37,9 @@ namespace Cinema.Api.Controllers
             return customers.Select(x => _converter.Convert(x)).OrderBy(x => x.Id).ToList();
         }
 
-        //[Authorize(Roles = "Admin")]
-        [Authorize]
+
         // GET: api/Customers/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerDTO>> GetCustomer(int id)
         {
@@ -61,9 +62,15 @@ namespace Cinema.Api.Controllers
         }
 
         // PUT: api/Customers/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(int id, CustomerDTO customerDTO)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
             // Checks if the Id's are matching.
             if (id != customerDTO.Id)
             {
@@ -111,10 +118,16 @@ namespace Cinema.Api.Controllers
             return CreatedAtAction("GetCustomer", new { id = customer.Id }, _converter.Convert(customer));
         }
 
+        [Authorize]
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
             // Get the relevant customer.
             Customer customer = await _context.Customers.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 

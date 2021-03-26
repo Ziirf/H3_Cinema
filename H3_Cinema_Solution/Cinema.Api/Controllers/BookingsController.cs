@@ -7,9 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cinema.Converter;
 using Cinema.Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingsController : ControllerBase
@@ -24,6 +26,7 @@ namespace Cinema.Api.Controllers
         }
 
         // GET: api/Bookings
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookingDTO>>> GetBookings()
         {
@@ -37,6 +40,11 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BookingDTO>> GetBooking(int id)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
 
             var booking = await _context.Bookings.FindAsync(id);
 
@@ -48,6 +56,7 @@ namespace Cinema.Api.Controllers
             return _converter.Convert(booking);
         }
 
+        [Authorize(Roles = "Admin")]
         // PUT: api/Bookings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -88,6 +97,12 @@ namespace Cinema.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != bookingDTO.CustomerId.ToString())
+            {
+                return BadRequest();
+            }
+
             // Converts BookingDTO into Booking
             Booking booking = _converter.Convert(bookingDTO);
 
@@ -101,6 +116,12 @@ namespace Cinema.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
+            {
+                return BadRequest();
+            }
+
             var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {

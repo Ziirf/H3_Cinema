@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Cinema.Data;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AgeRatingsController : ControllerBase

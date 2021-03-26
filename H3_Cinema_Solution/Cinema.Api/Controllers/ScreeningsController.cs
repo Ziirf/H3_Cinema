@@ -9,9 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cinema.Api.ExtentionMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ScreeningsController : ControllerBase
@@ -39,8 +41,10 @@ namespace Cinema.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ScreeningDTO>> GetScreening(int id)
         {
+
             // Get specific Screening and include relations from database. Convert to DTO
             var screening = await _context.Screenings.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
+
 
             if (screening == null)
             {
@@ -51,6 +55,7 @@ namespace Cinema.Api.Controllers
         }
 
         // GET: api/Screenings/Movie/5
+
         [HttpGet("Movie/{id}")]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreeningByMovieId(int id)
         {

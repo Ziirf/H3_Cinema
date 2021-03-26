@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cinema.Api.ExtentionMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Cinema.Api.Controllers
 {
@@ -33,6 +34,7 @@ namespace Cinema.Api.Controllers
             // Gets the movies out of the database.
             return await _context.Movies.IncludeAll().Select(movie => _converter.Convert(movie)).ToListAsync();
         }
+
 
         // Get: api/Movies/Range/1-20
         [HttpGet("Range/{start}-{end}")]
@@ -117,6 +119,7 @@ namespace Cinema.Api.Controllers
         }
 
         // PUT: api/Movies/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, MovieDTO movieDTO)
         {
@@ -153,6 +156,7 @@ namespace Cinema.Api.Controllers
         }
 
         // POST: api/Movies
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<MovieDTO>> PostMovie(MovieDTO movieDTO)
         {
@@ -170,6 +174,7 @@ namespace Cinema.Api.Controllers
         }
 
         // DELETE: api/Movies/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {

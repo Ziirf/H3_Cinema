@@ -32,6 +32,14 @@ namespace Cinema.Api.Controllers
             _jwtsettings = jwtsettings.Value;
         }
 
+        [Authorize]
+        [HttpGet("TokenValidate")]
+        public async Task<ActionResult<bool>> ValidateToken()
+        {
+            return true;
+        }
+
+       
 
         [HttpPost("Login")]
         public async Task<ActionResult<UserDTO>> Login([FromBody] User user)
@@ -98,6 +106,7 @@ namespace Cinema.Api.Controllers
                     new Claim(ClaimTypes.Role, Convert.ToString(user.Rights))
                 }),
                 Expires = DateTime.UtcNow.AddDays(2),
+                //Expires = DateTime.UtcNow.AddMinutes(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };

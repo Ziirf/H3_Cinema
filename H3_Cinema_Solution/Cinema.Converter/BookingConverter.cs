@@ -55,11 +55,10 @@ namespace Cinema.Converter
             // Convert To Booking, get Seat and Customer from CinemaContext by ID
             return new Booking() //TODO
             {
-                //Id = bookingDTO.BookingId,
-                //SeatId = bookingDTO.SeatId,
-                //Seat =  Seat() { Id = bookingDTO.SeatId, ScreeningId = bookingDTO.ScreeningId},
-                //Customer = _context.Customers.FirstOrDefault(x => x.Id == bookingDTO.CustomerId)
-
+                Id = bookingDTO.BookingId,
+                Customer = _context.Customers.FirstOrDefault(x=> x.Id == bookingDTO.CustomerId),
+                Seat = _context.Seats.FirstOrDefault(x=> x.Id == bookingDTO.SeatId)
+                
             };
         }
 
