@@ -61,33 +61,6 @@ namespace Cinema.Api.Controllers
             return userDTO;
         }
 
-        [HttpGet("Login")]
-        public async Task<ActionResult<UserDTO>> Login(string username, string password)
-        {
-            User user = _context.Users.FirstOrDefault(x => x.Username == username);
-
-            user = await _context.Users.Include(x => x.Customer)
-                .Where(x => x.Username == username && x.Password == password).FirstOrDefaultAsync();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var token = GenerateAccessToken(user);
-
-            var userDTO = new UserDTO()
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Rights = user.Rights,
-                CustomerId = user.Customer.Id,
-                Token = token
-            };
-
-            return userDTO;
-        }
-
         private string GenerateAccessToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -100,8 +73,7 @@ namespace Cinema.Api.Controllers
                     new Claim("CustomerId", Convert.ToString(user.Customer.Id)),
                     new Claim(ClaimTypes.Role, Convert.ToString(user.Rights))
                 }),
-                Expires = DateTime.UtcNow.AddDays(2),
-                //Expires = DateTime.UtcNow.AddMinutes(2),
+                Expires = DateTime.UtcNow.AddDays(14),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
