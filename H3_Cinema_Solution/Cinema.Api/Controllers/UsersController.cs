@@ -1,4 +1,4 @@
-﻿using Cinema.Api.models;
+﻿using Cinema.Api.Models;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
-using Cinema.Domain.DTOs;
-using Cinema.Data;
-using Cinema.Domain.Models;
-using Cinema.Api.Models;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cinema.Api.Controllers
 {
@@ -30,12 +31,10 @@ namespace Cinema.Api.Controllers
 
         [Authorize]
         [HttpGet("TokenValidate")]
-        public async Task<ActionResult<bool>> ValidateToken()
+        public ActionResult<bool> ValidateToken()
         {
             return true;
         }
-
-
 
         [HttpPost("Login")]
         public async Task<ActionResult<UserDTO>> Login([FromBody] User user)
