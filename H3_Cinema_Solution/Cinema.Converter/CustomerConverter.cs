@@ -1,4 +1,5 @@
-﻿using Cinema.Converters;
+﻿using System.Collections.Generic;
+using Cinema.Converters;
 using Cinema.Data;
 using Cinema.Domain.DTOs;
 using Cinema.Domain.Models;
@@ -55,6 +56,13 @@ namespace Cinema.Converter
             if (postcode != null)
             {
                 customer.PostcodeId = postcode.Id;
+                customer.Postcode = postcode;
+            }
+
+            List<Booking> bookings = _context.Bookings.Where(x => x.Customer.Id == customer.Id).ToList();
+            if (bookings != null)
+            {
+                customer.Bookings = bookings;
             }
 
             return customer;
