@@ -27,6 +27,7 @@ namespace Cinema.Converters
                 ImgUrl = movie.ImgUrl,
                 ReleaseDate = movie.ReleaseDate,
                 Genre = movie.MovieGenres?.Select(x => x.Genre.Name).ToList(),
+                Description = movie.Description,
                 Directors = movie.MovieCrews.Where(item => item.Role.Title == "Director").Select(item => item.Crew).ToList(),
                 ScreenWriters = movie.MovieCrews.Where(item => item.Role.Title == "Screen Writer").Select(item => item.Crew).ToList(),
                 ScriptWriters = movie.MovieCrews.Where(item => item.Role.Title == "Script Writer").Select(item => item.Crew).ToList(),
@@ -87,8 +88,8 @@ namespace Cinema.Converters
                 Rating = movieDTO.Rating,
                 ImgUrl = movieDTO.ImgUrl,
                 ReleaseDate = movieDTO.ReleaseDate,
+                Description = movieDTO.Description,
                 MovieGenres = new List<MovieGenre>(),
-                //MovieGenres = movieDTO.Genre.Select(x => new MovieGenre() { Genre = new Genre() { Name = x } }).ToList(),
                 MovieCrews = crews.ToList()
             };
 
@@ -104,12 +105,12 @@ namespace Cinema.Converters
             {
                 foreach (var genre in movieDTO.Genre)
                 {
-                    var asd = _context.Genres.FirstOrDefault(x => x.Name == genre).Id;
+                    var genreId = _context.Genres.FirstOrDefault(x => x.Name == genre).Id;
 
                     movie.MovieGenres.Add(new MovieGenre
                     {
                         MovieId = movieDTO.Id,
-                        GenreId = asd
+                        GenreId = genreId
                     });
                 }
             }

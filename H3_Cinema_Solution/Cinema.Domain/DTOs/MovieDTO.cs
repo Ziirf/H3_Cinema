@@ -12,6 +12,7 @@ namespace Cinema.Domain.DTOs
         public float Rating { get; set; }
         public string AgeRating { get; set; }
         public string ImgUrl { get; set; }
+        public string Description { get; set; }
         public DateTime? ReleaseDate { get; set; }
         public ICollection<string> Genre { get; set; }
         public ICollection<Crew> Directors { get; set; }

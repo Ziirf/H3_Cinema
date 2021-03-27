@@ -12,6 +12,7 @@ namespace Cinema.Domain.Models
         public int? AgeRatingId { get; set; }
         public AgeRating AgeRating { get; set; }
         public string ImgUrl { get; set; }
+        public string Description { get; set; }
         public DateTime? ReleaseDate { get; set; }
         public ICollection<MovieGenre> MovieGenres { get; set; }
         public ICollection<MovieCrew> MovieCrews { get; set; }
