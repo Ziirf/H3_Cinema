@@ -1,10 +1,11 @@
 ﻿using Cinema.Domain.Models;
+using System.Linq;
 using Xunit;
 
 namespace Cinema.Test.Models
 {
     //[TestFixture]
-    public class CustomerModel
+    public class CustomerModelTest
     {
         [Theory]
         [InlineData(null, null, null, null, null, 5)]
@@ -30,46 +31,38 @@ namespace Cinema.Test.Models
         }
 
         [Theory]
-        [InlineData(null, 1)]
-        [InlineData("", 1)]
-        [InlineData("NotAValidMail", 1)]
-        [InlineData("A@Valid.Mail", 0)]
-        public void CheckEmailRequirements(string email, int errors)
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData("NotAValidMail", false)]
+        [InlineData("A@Valid.Mail", true)]
+        public void CheckEmailRequirements(string email, bool success)
         {
             var customer = new Customer()
             {
-                FirstName = "Nicolai",
-                LastName = "lastName",
-                Address = "address",
-                Email = email,
-                PhoneNumber = "20212223"
+                Email = email
             };
 
-            var results = Helper.Validate(customer);
+            var result = Helper.HasError(customer, "Email");
 
-            Assert.Equal(errors, results.Count);
+            Assert.NotEqual(success, result);
         }
 
         [Theory]
-        [InlineData(null, 1)]
-        [InlineData("", 1)]
-        [InlineData("123", 1)]
-        [InlineData("123456789123456789", 1)]
-        [InlineData("20212223", 0)]
-        public void CheckPhoneRequirements(string phone, int errors)
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData("123", false)]
+        [InlineData("123456789123456789", false)]
+        [InlineData("20212223", true)]
+        public void CheckPhoneRequirements(string phone, bool success)
         {
             var customer = new Customer()
             {
-                FirstName = "Nicolai",
-                LastName = "lastName",
-                Address = "address",
-                Email = "valid@mail.com",
                 PhoneNumber = phone
             };
 
-            var results = Helper.Validate(customer);
+            var result = Helper.HasError(customer, "PhoneNumber");
 
-            Assert.Equal(errors, results.Count);
+            Assert.NotEqual(success, result);
         }
     }
 }

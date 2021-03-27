@@ -6,10 +6,10 @@ using Xunit;
 
 namespace Cinema.Test.Database
 {
-    public class CustomerDb
+    public class CustomerDbTest
     {
         private CinemaContext _context;
-        public CustomerDb()
+        public CustomerDbTest()
         {
             var builder = new DbContextOptionsBuilder<CinemaContext>();
             builder.UseInMemoryDatabase("CinemaDBCustomerTesting");
