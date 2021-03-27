@@ -1,9 +1,7 @@
-using Cinema.Domain.Models;
-using System;
-using System.Threading.Tasks;
-using Cinema.Api.Controllers;
 using Cinema.Data;
+using Cinema.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Cinema.Test.Database
