@@ -21,33 +21,30 @@ namespace Cinema.Converter
         public BookingDTO Convert(Booking booking)
         {
             //Get Bookings from database with relation tables.
-            var bookings = _context.Bookings
-                .Include(x => x.Customer)
-                .Include(x => x.Seat).ThenInclude(x => x.Screening)
-                .ThenInclude(x => x.Theater)
-                .Include(x => x.Seat)
-                .ThenInclude(x => x.SeatLocation)
-                .Include(x=>x.Seat.Screening.Movie)
-                .FirstOrDefault(x => x.Id == booking.Id);
-
-
+            //var bookings = _context.Bookings
+            //    .Include(x => x.Customer)
+            //    .Include(x => x.Seat).ThenInclude(x => x.Screening)
+            //    .ThenInclude(x => x.Theater)
+            //    .Include(x => x.Seat)
+            //    .ThenInclude(x => x.SeatLocation)
+            //    .Include(x=>x.Seat.Screening.Movie)
+            //    .FirstOrDefault(x => x.Id == booking.Id);
 
             // Convert to BookingDTO
             return new BookingDTO()
             {
                 BookingId = booking.Id,
-                CustomerId = bookings.Customer.Id,
-                MovieId = bookings.Seat.Screening.Movie.Id,
-                SeatId = bookings.Seat.Id,
-                ScreeningId = bookings.Seat.ScreeningId,
-                SeatNumber = bookings.Seat.SeatLocation.SeatNumber,
-                RowNumber = bookings.Seat.SeatLocation.Row,
-                MovieName = bookings.Seat.Screening.Movie.Title,
-                TheaterName = bookings.Seat.Screening.Theater.TheaterName,
-                ImgUrl = bookings.Seat.Screening.Movie.ImgUrl,
-                ScreeningTime = bookings.Seat.Screening.Time
+                CustomerId = booking.Customer.Id,
+                MovieId = booking.Seat.Screening.Movie.Id,
+                SeatId = booking.Seat.Id,
+                ScreeningId = booking.Seat.ScreeningId,
+                SeatNumber = booking.Seat.SeatLocation.SeatNumber,
+                RowNumber = booking.Seat.SeatLocation.Row,
+                MovieName = booking.Seat.Screening.Movie.Title,
+                TheaterName = booking.Seat.Screening.Theater.TheaterName,
+                ImgUrl = booking.Seat.Screening.Movie.ImgUrl,
+                ScreeningTime = booking.Seat.Screening.Time
             };
-
         }
 
         public Booking Convert(BookingDTO bookingDTO)
@@ -61,7 +58,5 @@ namespace Cinema.Converter
                 
             };
         }
-
-
     }
 }

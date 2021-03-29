@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinema.Api.ExtentionMethods;
 
 namespace Cinema.Api.Controllers
 {
@@ -31,14 +32,14 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<IEnumerable<BookingDTO>>> GetBookings()
         {
             // Get all bookings and convert to BookingDTO
-            var bookings = await _context.Bookings.ToListAsync();
+            var bookings = await _context.Bookings.IncludeAll().ToListAsync();
 
             return bookings.Select(x => _converter.Convert(x)).ToList();
         }
 
-        // GET: api/Bookings/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BookingDTO>> GetBooking(int id)
+        // Get: api/Bookings/Customer/1
+        [HttpGet("Customer/{id}")]
+        public async Task<ActionResult<IEnumerable<BookingDTO>>> GetBookingsByCustomerId(int id)
         {
             // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
             if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
@@ -46,7 +47,20 @@ namespace Cinema.Api.Controllers
                 return BadRequest();
             }
 
-            var booking = await _context.Bookings.FindAsync(id);
+            // Get all bookings and convert to BookingDTO
+            var bookings = await _context.Bookings.IncludeAll().ToListAsync();
+
+            bookings = bookings.Where(x => x.Customer.Id == id).ToList();
+
+            return bookings.Select(x => _converter.Convert(x)).ToList();
+        }
+
+        // GET: api/Bookings/5
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<BookingDTO>> GetBooking(int id)
+        {
+            var booking = await _context.Bookings.IncludeAll().FirstOrDefaultAsync(x => x.Id == id);
 
             if (booking == null)
             {

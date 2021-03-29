@@ -30,5 +30,16 @@ namespace Cinema.Api.ExtentionMethods
                 .Include(x => x.Postcode)
                 .Include(x => x.Bookings);
         }
+
+        public static IIncludableQueryable<Booking, Movie> IncludeAll(this DbSet<Booking> booking)
+        {
+            return booking
+                .Include(x => x.Customer)
+                .Include(x => x.Seat).ThenInclude(x => x.Screening)
+                .ThenInclude(x => x.Theater)
+                .Include(x => x.Seat)
+                .ThenInclude(x => x.SeatLocation)
+                .Include(x => x.Seat.Screening.Movie);
+        }
     }
 }
