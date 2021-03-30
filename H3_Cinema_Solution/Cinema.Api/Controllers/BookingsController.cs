@@ -70,14 +70,14 @@ namespace Cinema.Api.Controllers
             return _converter.Convert(booking);
         }
 
-        [Authorize(Roles = "Admin")]
         // PUT: api/Bookings/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutBooking(int id, BookingDTO bookingDTO)
         {
             // Update a Booking
-            if (id != bookingDTO.BookingId)
+            if (id != bookingDTO.Id)
             {
                 return BadRequest();
             }
@@ -109,10 +109,15 @@ namespace Cinema.Api.Controllers
         // POST: api/Bookings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Booking>> PostBooking(BookingDTO bookingDTO)
+        public async Task<ActionResult<Booking>> PostBooking([FromBody]BookingDTO bookingDTO)
         {
             // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
             if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != bookingDTO.CustomerId.ToString())
+            {
+                return Unauthorized();
+            }
+
+            if (_context.Bookings.FirstOrDefault(x => x.SeatId == bookingDTO.SeatId) != null)
             {
                 return BadRequest();
             }
@@ -133,7 +138,7 @@ namespace Cinema.Api.Controllers
             // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
             if (!User.IsInRole("Admin") && User.FindFirst("CustomerId").Value != id.ToString())
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             var booking = await _context.Bookings.FindAsync(id);

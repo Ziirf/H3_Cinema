@@ -4,7 +4,7 @@ namespace Cinema.Domain.DTOs
 {
     public class BookingDTO
     {
-        public int BookingId { get; set; }
+        public int Id { get; set; }
 
         public int CustomerId { get; set; }
 
