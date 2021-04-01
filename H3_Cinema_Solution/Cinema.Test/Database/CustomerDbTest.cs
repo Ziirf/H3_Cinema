@@ -12,7 +12,7 @@ namespace Cinema.Test.Database
         public CustomerDbTest()
         {
             var builder = new DbContextOptionsBuilder<CinemaContext>();
-            builder.UseInMemoryDatabase("CinemaDBCustomerTesting");
+            builder.UseInMemoryDatabase("CinemaDatabaseCustomerTesting");
             _context = new CinemaContext(builder.Options);
         }
 

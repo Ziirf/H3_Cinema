@@ -15,14 +15,15 @@ namespace Cinema.Test.Converter
     public class CustomerConverterTest
     {
         private CinemaContext _context;
+        private Customer _customer;
 
         public CustomerConverterTest()
         {
             var builder = new DbContextOptionsBuilder<CinemaContext>();
-            builder.UseInMemoryDatabase("CinemaDBCustomerTesting");
+            builder.UseInMemoryDatabase("CinemaConverterCustomerTesting");
             _context = new CinemaContext(builder.Options);
 
-            var customer = new Customer()
+            _customer = new Customer()
             {
                 FirstName = "Nicolai",
                 LastName = "Friis",
@@ -37,8 +38,9 @@ namespace Cinema.Test.Converter
                 }
                 
             };
-            _context.Add(customer);
-            _context.SaveChanges();
+
+            _context.Customers.Add(_customer);
+            _context.SaveChangesAsync();
         }
 
         [Fact]
