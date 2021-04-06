@@ -61,6 +61,29 @@ namespace Cinema.Api.Controllers
             return userDTO;
         }
 
+        [HttpPost("CreateUser")]
+        public async Task<ActionResult<User>> CreateUser([FromBody] User user)
+        {
+            ////Check that the User does not exist.
+            //if (_context.Users.FirstOrDefault(x => x.Customer.Id == user.Customer.Id) != null)
+            //{
+            //    return Problem(title: "This User customer id already exists");
+            //}
+            //check username
+
+            user.Rights = 0;
+            
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            user.Password = "*************";
+            
+            return user;
+        }
+
+      
+
         private string GenerateAccessToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
