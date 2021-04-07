@@ -61,6 +61,21 @@ namespace Cinema.Api.Controllers
             return userDTO;
         }
 
+        [HttpGet("CheckUserName")]
+        public async Task<ActionResult<bool>> CheckUserName(string username) //Rewrite maybe 
+        {
+            var userlist = await _context.Users.Where(x => x.Username == username).ToListAsync();
+            bool result = false;
+
+
+            foreach (var item in userlist.Where(item => item.Username == username))
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
         [HttpPost("CreateUser")]
         public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
