@@ -6,10 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cinema.Domain.Models;
 using Cinema.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cinema.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AutoCompleteController : ControllerBase
