@@ -23,11 +23,14 @@ namespace Cinema.Api.Controllers
             _context = context;
         }
 
-        [HttpGet("Movies")]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovieAutoComplete()
+        [HttpGet("Movies/")]
+        [HttpGet("Movies/{search}")]
+        public async Task<ActionResult<IEnumerable<Movie>>> GetMovieAutoComplete(string search = "")
         {
-            var movies = await _context.Movies.Select(x => new {id = x.Id, value = x.Title}).ToListAsync();
-            
+            var movies = await _context.Movies.Where(x => x.Title.Contains(search))
+                .Select(x => new { id = x.Id, value = x.Title }).Take(50)
+                .ToListAsync();
+
             return Ok(movies);
         }
 
