@@ -11,6 +11,8 @@ namespace Cinema.Domain.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public UserRights Rights { get; set; }
+
+        public int  CustomerId { get; set; }
         public Customer Customer { get; set; }
     }
 }
