@@ -80,11 +80,22 @@ namespace Cinema.Api.Controllers
         public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
             ////Check that the User does not exist.
-            //if (_context.Users.FirstOrDefault(x => x.Customer.Id == user.Customer.Id) != null)
-            //{
-            //    return Problem(title: "This User customer id already exists");
-            //}
-            //check username
+
+            var userCustomer = await _context.Users.Where(x => x.CustomerId == user.CustomerId).ToListAsync();
+
+            if (userCustomer.Count != 0)
+            {
+                return Conflict();
+            }
+
+
+            var userName = await _context.Users.Where(x=> x.Username == user.Username).ToListAsync();
+
+            if (userName.Count != 0)
+            {
+                return Conflict();
+            }
+
 
             user.Rights = 0;
             

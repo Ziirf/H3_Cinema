@@ -30,7 +30,7 @@ namespace Cinema.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ScreeningDTO>>> GetScreenings()
         {
-            // Get Screeningsd and include relations from database. Convert to DTO
+            // Get Screenings and include relations from database. Convert to DTO
             var screenings = await _context.Screenings.IncludeAll().ToListAsync();
 
             var result = screenings.Select(x => _screeningsConverter.Convert(x)).ToList();
