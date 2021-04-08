@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cinema.Domain.Models
+﻿namespace Cinema.Domain.Models
 {
-    public enum UserRights { User = 0, Admin = 1}
+    public enum UserRights { User = 0, Admin = 1 }
     public class User
     {
         public int Id { get; set; }
@@ -12,7 +8,7 @@ namespace Cinema.Domain.Models
         public string Password { get; set; }
         public UserRights Rights { get; set; }
 
-        public int  CustomerId { get; set; }
+        public int CustomerId { get; set; }
         public Customer Customer { get; set; }
     }
 }

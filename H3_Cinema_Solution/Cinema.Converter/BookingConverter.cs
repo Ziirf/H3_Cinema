@@ -11,25 +11,19 @@ namespace Cinema.Converter
     {
         private readonly CinemaContext _context;
 
-
         public BookingConverter(CinemaContext context)
         {
+            // Dependency Injection
             _context = context;
         }
 
-
+        /// <summary>
+        /// Converts Booking to BookingDTO
+        /// </summary>
+        /// <param name="booking">The booking you want converted.</param>
+        /// <returns>The Converted booking as DTO</returns>
         public BookingDTO Convert(Booking booking)
         {
-            //Get Bookings from database with relation tables.
-            //var bookings = _context.Bookings
-            //    .Include(x => x.Customer)
-            //    .Include(x => x.Seat).ThenInclude(x => x.Screening)
-            //    .ThenInclude(x => x.Theater)
-            //    .Include(x => x.Seat)
-            //    .ThenInclude(x => x.SeatLocation)
-            //    .Include(x=>x.Seat.Screening.Movie)
-            //    .FirstOrDefault(x => x.Id == booking.Id);
-
             // Convert to BookingDTO
             return new BookingDTO()
             {
@@ -47,14 +41,19 @@ namespace Cinema.Converter
             };
         }
 
+        /// <summary>
+        /// Convert BookingDTO to Booking Model
+        /// </summary>
+        /// <param name="bookingDTO">The booking dto you want converted.</param>
+        /// <returns>The Converted DTO as a model</returns>
         public Booking Convert(BookingDTO bookingDTO)
         {
-            // Convert To Booking, get Seat and Customer from CinemaContext by ID
-            return new Booking() //TODO
+            return new Booking()
             {
                 Id = bookingDTO.Id,
                 SeatId = bookingDTO.SeatId,
                 CustomerId = bookingDTO.CustomerId,
+                // grabs the models from the database by Id.
                 Customer = _context.Customers.FirstOrDefault(x=> x.Id == bookingDTO.CustomerId),
                 Seat = _context.Seats.FirstOrDefault(x=> x.Id == bookingDTO.SeatId)
             };

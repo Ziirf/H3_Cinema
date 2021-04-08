@@ -1,16 +1,14 @@
-﻿using Cinema.Data;
+﻿using Cinema.Api.Controllers;
+using Cinema.Data;
 using Cinema.Domain.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cinema.Api.Controllers;
-using Xunit;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Cinema.Test.API
 {

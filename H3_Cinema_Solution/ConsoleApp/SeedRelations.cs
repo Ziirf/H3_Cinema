@@ -50,28 +50,6 @@ namespace ConsoleApp
             return movieGenres;
         }
 
-        //private List<MovieCrew> PopulateMovieCrewOld()
-        //{
-        //    List<MovieCrew> movieCrews = _context.MovieCrew.ToList();
-        //    List<Movie> movies = _context.Movies.ToList();
-        //    List<Crew> crew = _context.Crews.ToList();
-        //    List<Role> roles = _context.Roles.ToList();
-
-        //    foreach (var movie in movies)
-        //    {
-        //        List<Crew> randomCrews = crew.OrderBy(x => _random.Next()).Take(_random.Next(3, 10)).ToList();
-
-        //        foreach (var randomCrew in randomCrews)
-        //        {
-        //            Role randomRole = roles.OrderBy(x => _random.Next()).First();
-        //            movieCrews.Add(new MovieCrew() { Movie = movie, Crew = randomCrew, Role = randomRole });
-        //        }
-
-        //    }
-
-        //    return movieCrews;
-        //}
-
         private List<MovieCrew> PopulateMovieCrew()
         {
             List<MovieCrew> movieCrews = _context.MovieCrew.ToList();
@@ -102,7 +80,7 @@ namespace ConsoleApp
             List<Customer> customers = _context.Customers.ToList();
             List<Postcode> postcodes = _context.Postcodes.ToList();
             var rnd = new Random();
-            
+
             // Add random postcodes to customers
             foreach (var customer in customers)
             {
@@ -151,7 +129,7 @@ namespace ConsoleApp
             List<Movie> movies = _context.Movies.Take(movieAmount).ToList();
             List<Theater> theaters = _context.Theaters.ToList();
 
-            //Generate Screenings on random Theaters from random Movies
+            // Generate Screenings on random Theaters from random Movies
             for (int i = 0; i < amountGenerated; i++)
             {
                 int theaterID = _random.Next(theaters.Count);
@@ -169,8 +147,8 @@ namespace ConsoleApp
 
         private DateTime RandomTime(int fromNow = 7)
         {
-            //Generate RandomTime for Screening
-            int[] numbArray = {0, 10, 15, 20, 30, 40, 45, 50};
+            // Generate RandomTime for Screening
+            int[] numbArray = { 0, 10, 15, 20, 30, 40, 45, 50 };
 
             return DateTime.Today
                 .AddDays(_random.Next(1, fromNow))
@@ -180,7 +158,7 @@ namespace ConsoleApp
 
         private List<Booking> PopulateBookings(int amountBooked = 100)
         {
-            //Generate Bookings with random Customers with random Seats
+            // Generate Bookings with random Customers with random Seats
 
             List<Booking> bookings = _context.Bookings.ToList();
             List<Customer> customers = _context.Customers.ToList();
@@ -195,14 +173,6 @@ namespace ConsoleApp
                     Seat = seat
                 });
             }
-
-            //for (int i = 0; i < amountBooked; i++)
-            //{
-            //    bookings.Add(new Booking()
-            //    {
-            //        Customer = customers[i],
-            //    });
-            //}
 
             return bookings;
         }

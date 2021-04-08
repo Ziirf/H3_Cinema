@@ -26,7 +26,7 @@ namespace Cinema.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Cors Policy, in prod specify to specific IP
+            // Cors Policy, allows any origin/header/method.
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
@@ -35,12 +35,15 @@ namespace Cinema.Api
                         .AllowAnyHeader());
             });
 
+            // Disables loopback, used if you don't have DTOs.
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+            // Data Context from the sqlserver.
             services.AddDbContext<CinemaContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CinemaContext")));
 
+            // Adds the controllers.
             services.AddControllers();
 
 
@@ -48,9 +51,11 @@ namespace Cinema.Api
             var jwtSection = Configuration.GetSection("JWTSettings");
             services.Configure<JWTSettings>(jwtSection);
 
+            // Gets the key from appdata
             var appSettings = jwtSection.Get<JWTSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Key);
 
+            // Authentications, (we were not told to understand how it works.)
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -69,7 +74,7 @@ namespace Cinema.Api
                 };
             });
 
-            // Add Swagger
+            // Add Swagger (Using Postman, TODO remove.)
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cinema.Api", Version = "v1" });
@@ -79,10 +84,10 @@ namespace Cinema.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //CorsPolicy
+            // CorsPolicy, calls the cors we set up in ConfigureServices.
             app.UseCors("CorsPolicy");
 
-            //Add Swagger if development
+            // Add Swagger if development
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

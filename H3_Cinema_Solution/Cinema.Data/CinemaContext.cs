@@ -58,6 +58,7 @@ namespace Cinema.Data
             modelBuilder.Entity<Genre>().HasIndex(x => new { x.Name }).IsUnique();
         }
 
+        // Logging, used in console app.
         public static readonly ILoggerFactory ConsoleLoggerFactory = LoggerFactory.Create(builder =>
         {
             builder.AddFilter((category, level) =>
