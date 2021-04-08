@@ -27,42 +27,53 @@ namespace Cinema.Api.Controllers
         [HttpGet("Movies/{search}")]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMovieAutoComplete(string search = "")
         {
-            var movies = await _context.Movies.Where(x => x.Title.Contains(search))
-                .Select(x => new { id = x.Id, value = x.Title }).Take(50)
+            var movies = await _context.Movies.Select(x => new { id = x.Id, value = x.Title })
+                .Where(x => x.value.Contains(search)).Take(50)
                 .ToListAsync();
 
             return Ok(movies);
         }
 
-        //[HttpGet("Screenings")]
-        //public async Task<ActionResult<IEnumerable<Screening>>> GetScreeningAutoComplete()
-        //{
-        //    var screenings = await _context.Screenings.Select(x => new { id = x.Id, value = x. }).ToListAsync();
+        [HttpGet("Genres/")]
+        [HttpGet("Genres/{search}")]
+        public async Task<ActionResult<IEnumerable<Movie>>> GetGenreAutoComplete(string search = "")
+        {
+            var genres = await _context.Genres.Select(x => new { id = x.Id, value = x.Name })
+                .Where(x => x.value.Contains(search)).Take(50)
+                .ToListAsync();
 
-        //    return Ok(movies);
-        //}
+            return Ok(genres);
+        }
 
         [HttpGet("Users")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersAutoComplete()
+        [HttpGet("Users/{search}")]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsersAutoComplete(string search = "")
         {
-            // Get all movie and convert them to Movies
-            var users = await _context.Users.Select(x => new { id = x.Id, value = x.Username }).ToListAsync();
+            var users = await _context.Users.Select(x => new { id = x.Id, value = x.Username })
+                .Where(x => x.value.Contains(search)).Take(50)
+                .ToListAsync();
 
             return Ok(users);
         }
 
         [HttpGet("Customers")]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAutoComplete()
+        [HttpGet("Customers/{search}")]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAutoComplete(string search = "")
         {
-            var customers = await _context.Customers.Select(x => new { id = x.Id, value = $"{x.FirstName} {x.LastName}" }).ToListAsync();
+            var customers = await _context.Customers.Select(x => new { id = x.Id, value = $"{x.FirstName} {x.LastName}" })
+                .Where(x => x.value.Contains(search)).Take(50)
+                .ToListAsync();
 
             return Ok(customers);
         }
 
         [HttpGet("Theater")]
-        public async Task<ActionResult<IEnumerable<Theater>>> GetTheatersAutoComplete()
+        [HttpGet("Theater/{search}")]
+        public async Task<ActionResult<IEnumerable<Theater>>> GetTheatersAutoComplete(string search = "")
         {
-            var theaters = await _context.Theaters.Select(x => new { id = x.Id, value = $"{x.TheaterName}" }).ToListAsync();
+            var theaters = await _context.Theaters.Select(x => new { id = x.Id, value = $"{x.TheaterName}" })
+                .Where(x => x.value.Contains(search)).Take(50)
+                .ToListAsync();
 
             return Ok(theaters);
         }
