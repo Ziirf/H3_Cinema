@@ -97,7 +97,29 @@ namespace Cinema.Api.Controllers
             return user;
         }
 
-      
+        // DELETE: api/User/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            // Checks if the customerId isn't the same as the queried Id and if the user isn't Admin.
+            if (!User.IsInRole("Admin") && User.Identity.Name != id.ToString())
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
 
         private string GenerateAccessToken(User user)
         {
