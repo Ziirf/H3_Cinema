@@ -94,5 +94,33 @@ namespace Cinema.Api.Controllers
 
             return Ok(theaters);
         }
+
+        // GET: api/AutoComplete/AgeRating/  -- In case there are no search term it will call same controller but with no input.
+        // GET: api/AutoComplete/AgeRating/(searchTerm)
+        [HttpGet("AgeRating")]
+        [HttpGet("AgeRating/{search}")]
+        public async Task<ActionResult<IEnumerable<Theater>>> GetAgeRatingAutoComplete(string search = "")
+        {
+            // Get the first 50 theaters that contains the searchterm in the Theatername, output with only id and value to decrease latency.
+            var ageRating = await _context.AgeRatings.Select(x => new { id = x.Id, value = x.RatingName })
+                .Where(x => x.value.Contains(search)).Take(50)
+                .ToListAsync();
+
+            return Ok(ageRating);
+        }
+
+        // GET: api/AutoComplete/Crews/  -- In case there are no search term it will call same controller but with no input.
+        // GET: api/AutoComplete/Crews/(searchTerm)
+        [HttpGet("Crews")]
+        [HttpGet("Crews/{search}")]
+        public async Task<ActionResult<IEnumerable<Theater>>> GetCrewsAutoComplete(string search = "")
+        {
+            // Get the first 50 theaters that contains the searchterm in the Theatername, output with only id and value to decrease latency.
+            var crews = await _context.Crews.Select(x => new { id = x.Id, value = x.FirstName + " " + x.LastName })
+                .Where(x => x.value.Contains(search)).Take(50)
+                .ToListAsync();
+
+            return Ok(crews);
+        }
     }
 }
