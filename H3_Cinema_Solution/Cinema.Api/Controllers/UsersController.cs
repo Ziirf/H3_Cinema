@@ -107,6 +107,7 @@ namespace Cinema.Api.Controllers
         }
 
         // DELETE: api/User/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
