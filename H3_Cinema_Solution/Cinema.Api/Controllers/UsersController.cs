@@ -79,16 +79,16 @@ namespace Cinema.Api.Controllers
         [HttpPost("CreateUser")]
         public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
-            ////Check that the User does not exist.
-
+            //Check that there is no already a customer assigned to user account
             var userCustomer = await _context.Users.Where(x => x.CustomerId == user.CustomerId).ToListAsync();
 
             if (userCustomer.Count != 0)
             {
                 return Conflict();
             }
+            
 
-
+            ////Check that the User does not exist.
             var userName = await _context.Users.Where(x=> x.Username == user.Username).ToListAsync();
 
             if (userName.Count != 0)
@@ -96,10 +96,8 @@ namespace Cinema.Api.Controllers
                 return Conflict();
             }
 
-
             user.Rights = 0;
             
-
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
@@ -108,7 +106,24 @@ namespace Cinema.Api.Controllers
             return user;
         }
 
-      
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            // Delete specific user by ID
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Genres.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
 
         private string GenerateAccessToken(User user)
         {
